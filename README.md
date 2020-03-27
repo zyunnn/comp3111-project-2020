@@ -3,7 +3,16 @@
 >https://github.com/zyunnn/comp3111-project-2020.git
 
 
-## 1. 
+## 1. ZHOU Zhuorui
+>ITSC: zzhouba
+>
+>email: zzhouba@connect.ust.hk
+>
+>github: Zori-SMS
+>
+>dev branch: zzr_devTask
+>
+>Task 4 & Task 6
 
 ## 2. Wui Wo TAM
 >ITSC: wwtamaa
