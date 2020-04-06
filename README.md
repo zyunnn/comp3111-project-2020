@@ -1,4 +1,4 @@
-# COMP3111: Software Engineering Project - Course Scraper
+# COMP3111: Software Engineering Project - Course Scraper T05
 ## Team Repo
 >https://github.com/zyunnn/comp3111-project-2020.git
 
