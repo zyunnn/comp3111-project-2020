@@ -204,7 +204,7 @@ public class Scraper {
 					Course.incrementNumCourse();
 				}
 				result.add(c);
-//				System.out.println("Added course: " + c.getTitle());
+				System.out.println("Added course: " + c.getTitle());
 			}
 			client.close();
 			return result;
