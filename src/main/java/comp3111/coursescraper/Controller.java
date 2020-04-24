@@ -22,6 +22,10 @@ import javafx.concurrent.Task;
 
 import java.util.Random;
 import java.util.List;
+/**
+ * @author jacky tam
+ *
+ */
 public class Controller {
 
     @FXML
@@ -46,10 +50,39 @@ public class Controller {
     private ComboBox<?> comboboxTimeSlot;
 
     @FXML
-    private Tab tabFilter;
+    private Tab tabFilter;   
+    // need a listener to listen the filter and identify the needs, then call the interface to call the functions
+    /*
+     * things needed
+     * event handler
+     * 	@FXML
+	void handleBox() {
+		textAreaConsole.setText("AM");
+	}
+	
+	@FXML
+	void handleBox2() {
+		textAreaConsole.setText("bye");
+	}
+	    
+     * listener
+     * 
+     * declare all the checkbox with fx:id
+     * 
+     * */
+    
+    
 
     @FXML
     private Tab tabList;
+    /*
+     * things needed
+     * observe list
+     * 
+     * checkbox updater
+     * 
+     * 
+     * */
 
     @FXML
     private Tab tabTimetable;
@@ -196,5 +229,7 @@ public class Controller {
     	
     	
     }
+	
+
 
 }

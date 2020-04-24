@@ -2,6 +2,8 @@ package comp3111.coursescraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 
+import javafx.scene.control.CheckBox;
+
 public class Section {
 	
 	private String sectionId;		// 1808 refers to "COMP 1029J L1"
@@ -10,13 +12,25 @@ public class Section {
 	private boolean invalidFlag;
 	static private int numSections;
 	
+	// handle enrol box
+	private CheckBox enrolled;
+	private boolean enrollment;
+	
 	public Section() {
 		numSlots = 0;
 		invalidFlag = true;
+		
+		// handle enroll box
+		this.enrolled = new CheckBox();
+		enrollment = false;
+		
 	}
 	
 	public Section(HtmlElement e) {
 		numSlots = 0;
+		//handle enrol box
+		this.enrolled = new CheckBox();
+		enrollment = false;
 		
 		String[] sectionInfo = e.getChildNodes().get(1).asText().split(" ");
 		sectionCode = sectionInfo[0];
@@ -59,4 +73,19 @@ public class Section {
 	public static void resetNumSections() {
 		numSections = 0;
 	}
+	
+	// handle the clicking of enrolled box in list tab
+	public CheckBox getSelect() {
+		return enrolled;
+	}
+	
+	// flage to state whether the section has been enrolled or not
+	public void setSelect(CheckBox select) {
+		this.enrolled = select;
+		if (enrolled.isSelected())
+			enrollment = true;
+		else 
+			enrollment = false;
+	}
+	
  }
