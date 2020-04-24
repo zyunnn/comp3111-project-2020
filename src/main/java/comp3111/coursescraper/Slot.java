@@ -11,6 +11,7 @@ public class Slot {
 	private LocalTime start;
 	private LocalTime end;
 	private String venue;
+	private String instructor;
 	public static final String DAYS[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa"};
 	public static final Map<String, Integer> DAYS_MAP = new HashMap<String, Integer>();
 	static {
@@ -90,6 +91,20 @@ public class Slot {
 	 */
 	public void setDay(int day) {
 		this.day = day;
+	}
+	
+	/**
+	 * @param instructorName the name of instructor  
+	 */
+	public void setInstructor(String instructorName) {
+		this.instructor = instructorName;
+	}
+	
+	/**
+	 * @return instructor name 
+	 */
+	public String getInstructor() {
+		return instructor;
 	}
 
 }

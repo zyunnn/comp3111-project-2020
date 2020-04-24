@@ -1,22 +1,23 @@
-# COMP3111: Software Engineering Project - Course Scraper
+# COMP3111: Software Engineering Project - Course Scraper T05
 ## Team Repo
 >https://github.com/zyunnn/comp3111-project-2020.git
 
 
-## 1. 
+## 1. ZHOU Zhuorui
+>ITSC: zzhouba | email: zzhouba@connect.ust.hk | github: Zori-SMS | dev branch: zzr_devTask
+>
+>Task 4 & Task 6
 
 ## 2. Wui Wo TAM
->ITSC: wwtamaa
->
->email: jackytam97107@gmail.com
->
->github: tamww
->
->dev branch: tww_devTask
+>ITSC: wwtamaa | email: jackytam97107@gmail.com | github: tamww | dev branch: tww_devTask
 >
 >Task 2 & Task 3
 
-## 3. 
+## 3. YAP Zhi Yun
+>ITSC: zyyap | email: zhiyun.yap@gmail.com | github: zyunnn | dev branch: zy_feature
+>
+>Task 1 & Task 5
+
 
 ## Project Problem Statement and Activities
 > **Activity 1 (6%) - Due: Apr 6, 2020 at 11:59pm** 

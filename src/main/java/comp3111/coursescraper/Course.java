@@ -4,10 +4,12 @@ package comp3111.coursescraper;
 
 public class Course {
 	private static final int DEFAULT_MAX_SLOT = 20;
+	private static int numCourse = 0;
 	
 	private String title ; 
 	private String description ;
 	private String exclusion;
+//	private Section[] sections;
 	private Slot [] slots;
 	private int numSlots;
 	
@@ -84,5 +86,25 @@ public class Course {
 		this.numSlots = numSlots;
 	}
 	
+	/*
+	 * increase number of valid course by 1 
+	 */
+	public static void incrementNumCourse() {
+		numCourse++;
+	}
 
+	/**
+	 * @return number of courses
+	 */
+	public static int getNumCourse() {
+		return numCourse;
+	}
+	
+	/*
+	 * reset static variable numCourse
+	 */
+	public static void resetNumCourse() {
+		numCourse = 0;
+	}
+	
 }
