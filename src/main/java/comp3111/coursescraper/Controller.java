@@ -1,5 +1,6 @@
 package comp3111.coursescraper;
 
+import java.awt.Checkbox;
 import java.awt.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -20,10 +21,22 @@ import javafx.scene.paint.Color;
 import javafx.concurrent.Task;
 //import javafx.scene.control.TableView;
 
+//for handling checkbox
+import javafx.scene.control.CheckBox;
+
+
 import java.util.Random;
 import java.util.List;
+/**
+ * @author jacky tam
+ *
+ */
 public class Controller {
-
+	private static List<Course> myCourseList;
+	private static List<String> subject;
+	private List<Course> filterCourse;
+	
+	
     @FXML
     private Tab tabMain;
 
@@ -46,10 +59,143 @@ public class Controller {
     private ComboBox<?> comboboxTimeSlot;
 
     @FXML
-    private Tab tabFilter;
+    private Tab tabFilter;   
+    
+    @FXML
+    private CheckBox AmBox;
+    
+    @FXML
+    private CheckBox PmBox;
+    
+    @FXML
+    private CheckBox MondayBox;
+    
+    @FXML
+    private CheckBox TuesdayBox;
+    
+    @FXML
+    private CheckBox WednesdayBox;
+    
+    @FXML
+    private CheckBox ThursdayBox;
+    
+    @FXML
+    private CheckBox FridayBox;
+    
+    @FXML
+    private CheckBox SaturdayBox;
+    
+    @FXML
+    private CheckBox CCBox;
+    
+    @FXML
+    private CheckBox NExclBox;
+    
+    @FXML
+    private CheckBox LabBox;
+    
+    @FXML
+    private Button SelectALL;
+
+    
+    @FXML
+    void handleSelectAll() {
+    	if (SelectALL.getText().equals("Select All")) {
+    		SelectALL.setText("De-select All");
+
+        	AmBox.setSelected(true);
+        	PmBox.setSelected(true);
+        	MondayBox.setSelected(true);
+        	TuesdayBox.setSelected(true);
+        	WednesdayBox.setSelected(true);
+        	ThursdayBox.setSelected(true);
+        	FridayBox.setSelected(true);
+        	SaturdayBox.setSelected(true);
+        	CCBox.setSelected(true);
+        	NExclBox.setSelected(true);
+        	LabBox.setSelected(true);
+    		handleBox();
+    	}else {
+    		SelectALL.setText("Select All");
+        	AmBox.setSelected(false);
+        	PmBox.setSelected(false);
+        	MondayBox.setSelected(false);
+        	TuesdayBox.setSelected(false);
+        	WednesdayBox.setSelected(false);
+        	ThursdayBox.setSelected(false);
+        	FridayBox.setSelected(false);
+        	SaturdayBox.setSelected(false);
+        	CCBox.setSelected(false);
+        	NExclBox.setSelected(false);
+        	LabBox.setSelected(false);
+    		handleBox();
+    	}
+    };
+    
+    @FXML
+    void handleBox() {
+    	
+    	// intitate the filter checklist and pass to the filter class to process
+//    	filterCourse = myCourseList;
+    	filterCourse = null;
+    	Filter filterEN = new Filter();
+    	CheckBox[] CBList = new CheckBox[11];
+    	CBList[0] = AmBox;
+    	CBList[1] = PmBox;
+    	CBList[2] = MondayBox;
+    	CBList[3] = TuesdayBox;
+    	CBList[4] = WednesdayBox;
+    	CBList[5] = ThursdayBox;
+    	CBList[6] = FridayBox;
+    	CBList[7] = SaturdayBox;
+    	CBList[8] = CCBox;
+    	CBList[9] = NExclBox;
+    	CBList[10] = LabBox;
+    	filterCourse = filterEN.call_filter(CBList, filterCourse);
+    	
+    	// print text on console after filtering
+    	
+//    	textAreaConsole.setText(one);
+  	
+    	
+    }
+    
+//    AmBox.selectedProperty().addListener(BoxListen);
+
+    // need a listener to listen the filter and identify the needs, then call the interface to call the functions
+    /*//    		textAreaConsole.setText(nimab);
+//    		AmBox.selectedProperty().addListener(listener);
+    		
+     * things needed
+     * event handler
+     * 	@FXML
+	void handleBox() {
+		textAreaConsole.setText("AM");
+	}
+	
+	@FXML
+	void handleBox2() {
+		textAreaConsole.setText("bye");
+	}
+	    
+     * listener
+     * 
+     * declare all the checkbox with fx:id
+     * 
+     * */
+    
+    
 
     @FXML
     private Tab tabList;
+    /*
+     * things needed
+     * observe list
+     * 
+     * checkbox updater
+     * 
+     * 
+     * */
 
     @FXML
     private Tab tabTimetable;
@@ -196,5 +342,7 @@ public class Controller {
     	
     	
     }
+	
+
 
 }
