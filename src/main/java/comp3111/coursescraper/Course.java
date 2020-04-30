@@ -9,6 +9,7 @@ public class Course {
 	private String title ; 
 	private String description ;
 	private String exclusion;
+
 	private Slot [] slots;
 	private int numSlots;
 	
