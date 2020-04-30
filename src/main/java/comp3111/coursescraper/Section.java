@@ -11,7 +11,9 @@ public class Section {
 	private boolean validFlag;
 	static private int numSections;
 	
+
 	public Section(HtmlElement e) {
+
 
 		String[] sectionInfo = e.getChildNodes().get(1).asText().split(" ");
 		sectionCode = sectionInfo[0];
