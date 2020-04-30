@@ -13,7 +13,6 @@ public class Section {
 	static private int numSections;
 	
 	// handle enrol box
-	private CheckBox enrolled;
 	private boolean enrollment;
 	
 	public Section() {
@@ -21,7 +20,6 @@ public class Section {
 		invalidFlag = true;
 		
 		// handle enroll box
-		this.enrolled = new CheckBox();
 		enrollment = false;
 		
 	}
@@ -29,7 +27,6 @@ public class Section {
 	public Section(HtmlElement e) {
 		numSlots = 0;
 		//handle enrol box
-		this.enrolled = new CheckBox();
 		enrollment = false;
 		
 		String[] sectionInfo = e.getChildNodes().get(1).asText().split(" ");

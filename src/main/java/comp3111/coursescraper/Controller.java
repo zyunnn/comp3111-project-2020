@@ -8,6 +8,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -26,6 +28,7 @@ import javafx.scene.control.CheckBox;
 
 
 import java.util.Random;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * @author jacky tam
@@ -33,8 +36,8 @@ import java.util.List;
  */
 public class Controller {
 	private static List<Course> myCourseList;
-	private static List<String> subject;
 	private List<Course> filterCourse;
+    private List<String> myEnrolledCourseList = new ArrayList<String>();
 	
 	
     @FXML
@@ -96,69 +99,6 @@ public class Controller {
     
     @FXML
     private Button SelectALL;
-
-    
-    @FXML
-    void handleSelectAll() {
-    	if (SelectALL.getText().equals("Select All")) {
-    		SelectALL.setText("De-select All");
-
-        	AmBox.setSelected(true);
-        	PmBox.setSelected(true);
-        	MondayBox.setSelected(true);
-        	TuesdayBox.setSelected(true);
-        	WednesdayBox.setSelected(true);
-        	ThursdayBox.setSelected(true);
-        	FridayBox.setSelected(true);
-        	SaturdayBox.setSelected(true);
-        	CCBox.setSelected(true);
-        	NExclBox.setSelected(true);
-        	LabBox.setSelected(true);
-    		handleBox();
-    	}else {
-    		SelectALL.setText("Select All");
-        	AmBox.setSelected(false);
-        	PmBox.setSelected(false);
-        	MondayBox.setSelected(false);
-        	TuesdayBox.setSelected(false);
-        	WednesdayBox.setSelected(false);
-        	ThursdayBox.setSelected(false);
-        	FridayBox.setSelected(false);
-        	SaturdayBox.setSelected(false);
-        	CCBox.setSelected(false);
-        	NExclBox.setSelected(false);
-        	LabBox.setSelected(false);
-    		handleBox();
-    	}
-    };
-    
-    @FXML
-    void handleBox() {
-    	
-    	// intitate the filter checklist and pass to the filter class to process
-//    	filterCourse = myCourseList;
-    	filterCourse = null;
-    	Filter filterEN = new Filter();
-    	CheckBox[] CBList = new CheckBox[11];
-    	CBList[0] = AmBox;
-    	CBList[1] = PmBox;
-    	CBList[2] = MondayBox;
-    	CBList[3] = TuesdayBox;
-    	CBList[4] = WednesdayBox;
-    	CBList[5] = ThursdayBox;
-    	CBList[6] = FridayBox;
-    	CBList[7] = SaturdayBox;
-    	CBList[8] = CCBox;
-    	CBList[9] = NExclBox;
-    	CBList[10] = LabBox;
-    	filterCourse = filterEN.call_filter(CBList, filterCourse);
-    	
-    	// print text on console after filtering
-    	
-//    	textAreaConsole.setText(one);
-  	
-    	
-    }
     
 //    AmBox.selectedProperty().addListener(BoxListen);
 
@@ -218,6 +158,105 @@ public class Controller {
     @FXML
     private TextArea textAreaConsole;
 
+    @FXML
+    private TableView<Courselist> CourseListTable;
+    
+    @FXML
+    private TableColumn<Courselist, String> courseCode;
+
+    @FXML
+    private TableColumn<Courselist, String> sectionCode;
+
+    @FXML
+    private TableColumn<Courselist, String> courseName;
+
+    @FXML
+    private TableColumn<Courselist, String> instructor;
+
+    @FXML
+    private TableColumn<Courselist, CheckBox> enrollbox;
+    
+    @FXML
+    void handleSelectAll() {
+    	if (SelectALL.getText().equals("Select All")) {
+    		SelectALL.setText("De-select All");
+
+        	AmBox.setSelected(true);
+        	PmBox.setSelected(true);
+        	MondayBox.setSelected(true);
+        	TuesdayBox.setSelected(true);
+        	WednesdayBox.setSelected(true);
+        	ThursdayBox.setSelected(true);
+        	FridayBox.setSelected(true);
+        	SaturdayBox.setSelected(true);
+        	CCBox.setSelected(true);
+        	NExclBox.setSelected(true);
+        	LabBox.setSelected(true);
+    		handleBox();
+    	}else {
+    		SelectALL.setText("Select All");
+        	AmBox.setSelected(false);
+        	PmBox.setSelected(false);
+        	MondayBox.setSelected(false);
+        	TuesdayBox.setSelected(false);
+        	WednesdayBox.setSelected(false);
+        	ThursdayBox.setSelected(false);
+        	FridayBox.setSelected(false);
+        	SaturdayBox.setSelected(false);
+        	CCBox.setSelected(false);
+        	NExclBox.setSelected(false);
+        	LabBox.setSelected(false);
+    		handleBox();
+    	}
+    };
+    
+    
+    void enrollmentUpdate() {
+    	
+    }
+    
+    void updateList() {
+    	this.myEnrolledCourseList.clear();
+    	if (filterCourse == )
+    }
+    
+    @FXML
+    void handleBox() {
+    	textAreaConsole.clear();
+    	// intitate the filter checklist and pass to the filter class to process
+//    	filterCourse = myCourseList;
+    	this.filterCourse.clear();
+    	Filter filterEN = new Filter();
+    	CheckBox[] CBList = new CheckBox[11];
+    	CBList[0] = AmBox;
+    	CBList[1] = PmBox;
+    	CBList[2] = MondayBox;
+    	CBList[3] = TuesdayBox;
+    	CBList[4] = WednesdayBox;
+    	CBList[5] = ThursdayBox;
+    	CBList[6] = FridayBox;
+    	CBList[7] = SaturdayBox;
+    	CBList[8] = CCBox;
+    	CBList[9] = NExclBox;
+    	CBList[10] = LabBox;
+    	filterCourse = filterEN.call_filter(CBList, myCourseList);
+    	
+    	
+    	// print text on console after filtering
+    	for (Course c:this.filterCourse) {
+    		String newline = c.getTitle() + "\n";
+    		for (int i = 1;i<c.getNumSlots();i++) {
+    			Slot curr_slot = c.getSlot(i);
+    			newline += "Section " + curr_slot.getSections() + " Slot " + i + ":" + curr_slot.toString();
+    		}
+    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+    	} 	
+    	enrollmentUpdate();
+    	updateList();
+    	return;
+    }
+    
+    
     private Scraper scraper = new Scraper();
     
     @FXML

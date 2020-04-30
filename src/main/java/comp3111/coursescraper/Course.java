@@ -9,7 +9,7 @@ public class Course {
 	private String title ; 
 	private String description ;
 	private String exclusion;
-	private Section[] sections;
+	private String sections;
 	private Slot [] slots;
 	private int numSlots;
 	
@@ -28,6 +28,11 @@ public class Course {
 		if (i >= 0 && i < numSlots)
 			return slots[i];
 		return null;
+	}
+	public void resetSlot() {
+		slots = new Slot[DEFAULT_MAX_SLOT];
+		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
+		numSlots = 0;
 	}
 
 	/**
@@ -106,5 +111,7 @@ public class Course {
 	public static void resetNumCourse() {
 		numCourse = 0;
 	}
+
+
 	
 }
