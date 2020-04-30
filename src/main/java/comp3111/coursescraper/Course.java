@@ -3,13 +3,15 @@ package comp3111.coursescraper;
 
 
 public class Course {
-	private static final int DEFAULT_MAX_SLOT = 20;
-	private static int numCourse = 0;
-	
+	private static final int DEFAULT_MAX_SLOT = 100;
+	private static int numCourse = 0;	// for task 1, count only valid course
+	private static int allCourse = 0;	// for task 5, includes invalid course
 	private String title ; 
 	private String description ;
 	private String exclusion;
-	private String sections;
+
+
+
 	private Slot [] slots;
 	private int numSlots;
 	
@@ -85,10 +87,31 @@ public class Course {
 	}
 
 	/**
-	 * @param numSlots the numSlots to set
+	 * @param the numSlots to set
 	 */
 	public void setNumSlots(int numSlots) {
 		this.numSlots = numSlots;
+	}
+	
+	/*
+	 * increase number of all courses (including those without a valid section) 
+	 */
+	public static void incrementAllCourse() {
+		allCourse++;
+	}
+
+	/**
+	 * @return number of all courses (including those without a valid section)
+	 */
+	public static int getAllCourse() {
+		return allCourse;
+	}
+	
+	/*
+	 * reset static variable allCourse
+	 */
+	public static void resetAllCourse() {
+		allCourse = 0;
 	}
 	
 	/*

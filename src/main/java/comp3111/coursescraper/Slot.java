@@ -108,11 +108,19 @@ public class Slot {
 	public String getInstructor() {
 		return instructor;
 	}
-	
-	// temp
-	// temp functions
-	public String getSections() {
-		return "sectionCode";
+
+	/**
+	 * @param sectionCode of the slot 
+	 */
+	public void setSectionCode(String sectionCode) {
+		this.sectionCode = sectionCode;
 	}
 	
+	/**
+	 * @return sectionCode of the slot 
+	 */
+	public String getSectionCode() {
+		return sectionCode;
+	}
+
 }
