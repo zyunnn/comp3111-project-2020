@@ -21,6 +21,7 @@ public class Course {
 		numSlots = 0;
 	}
 	
+	@SuppressWarnings("static-access")
 	public Course clone() {
 		Course one = new Course();
 		one.setDescription(this.description);
@@ -46,6 +47,7 @@ public class Course {
 		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
 		numSlots = 0;
 	}
+
 
 	/**
 	 * @return the title

@@ -2,6 +2,7 @@
 
 package comp3111.coursescraper;
 
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,7 +14,7 @@ public class Courselist {
 	private SimpleStringProperty sectionCode;
 	private SimpleStringProperty courseName;
 	private SimpleStringProperty instructor;
-	private CheckBox enrollbox;
+	private CheckBox enbox;
 	private BooleanProperty checked;
 	private int status;
 	
@@ -23,7 +24,7 @@ public class Courselist {
 		this.courseName = new SimpleStringProperty (name);
 		this.instructor = new SimpleStringProperty (instructor);
 		this.checked = new SimpleBooleanProperty(false);
-		this.enrollbox = new CheckBox();
+		this.enbox = new CheckBox();
 		this.status = 0;
 	}
 	
@@ -84,11 +85,11 @@ public class Courselist {
     }
 	
 	public CheckBox getEnroll() {
-		return this.enrollbox;
+		return this.enbox;
 	}
 
 	public void setEnroll(CheckBox enroll) {
-		this.enrollbox = enroll;
+		this.enbox = enroll;
 	}
 
 	public int getStatus() {
@@ -98,6 +99,10 @@ public class Courselist {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	
+    public BooleanProperty checkedProperty() {
+        return checked;
+      }
 
 	
 }

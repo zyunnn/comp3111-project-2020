@@ -158,7 +158,7 @@ public class Controller  implements Initializable{
     private TableColumn<Courselist, String> instructor;
 
     @FXML
-    private TableColumn<Courselist, Boolean> enrollbox;
+    private TableColumn<Courselist, CheckBox> enrollbox;
     
     @FXML
     void switchToList() {
@@ -199,16 +199,18 @@ public class Controller  implements Initializable{
     	}
     };
     
-    private ObservableList<Courselist> tblist = FXCollections.observableArrayList();
+//    private ObservableList<Courselist> tblist = FXCollections.observableArrayList();
+    private ObservableList<Courselist> tblist = FXCollections.observableArrayList(item -> new javafx.beans.Observable[] {item.checkedProperty()});
+
     
     @FXML
     void enrollmentUpdate() {
     	
-//    	if (filterCourse == null) {
-//    		tblist.clear();
-//    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
-//    		return;
-//    	}
+    	if (filterCourse == null) {
+    		tblist.clear();
+    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
+    		return;
+    	}
     	/*
     	 * store the list of enrolled course
     	 * */
@@ -236,7 +238,7 @@ public class Controller  implements Initializable{
 //    		return;
 //    	}
     	
-    	for (Course curr : myCourseList) {
+    	for (Course curr : filterCourse) {
     		Set<String> checkedID = new HashSet<String>();
     		String [] titleL = curr.getTitle().split("\\ -");
     		
@@ -279,8 +281,7 @@ public class Controller  implements Initializable{
     void handleBox() {
     	textAreaConsole.clear();
     	// intitate the filter checklist and pass to the filter class to process
-//    	filterCourse = myCourseList;
-//    	filterCourse.clear();
+    	filterCourse = new ArrayList<Course>();
     	Filter filterEN = new Filter();
     	Boolean []CBList = new Boolean[11];
     	Arrays.fill(CBList, Boolean.FALSE);
@@ -289,65 +290,71 @@ public class Controller  implements Initializable{
     	
     	if (AmBox.isSelected()) {
     		CBList[0] = true;
-    		filter_flag = 1;
-    		System.out.println("captured");
+    		filter_flag ++;
+//    		System.out.println("captured");
     	}
     	if (PmBox.isSelected()) {
     		CBList[1] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
     	}
+    	
     	if (MondayBox.isSelected()) {
     		CBList[2] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
+//    		System.out.println("mon");
     	}
+    	
     	if (TuesdayBox.isSelected()) {
     		CBList[3] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
+//    		System.out.println("tue");
+
     	}
     	if (WednesdayBox.isSelected()) {
     		CBList[4] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
+//    		System.out.println("wed");
     	}
     	if (ThursdayBox.isSelected()) {
     		CBList[5] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
     	}
     	if (FridayBox.isSelected()) {
     		CBList[6] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
     	}
     	if (SaturdayBox.isSelected()) {
     		CBList[7] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
     	}
     	if (CCBox.isSelected()) {
     		CBList[8] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
     	}
     	if (NExclBox.isSelected()) {
     		CBList[9] = true;
-    		filter_flag = 1;
+    		filter_flag++;
     	}
     	if (LabBox.isSelected()) {
     		CBList[10] = true;
-    		filter_flag = 1;
+    		filter_flag ++;
     	}
     	
-//    	if(filter_flag == 1) {
-//    		filterCourse = filterEN.call_filter(CBList, myCourseList);
-//    	}else {
-//    		filterCourse = myCourseList;
-//    	}
+    	if(filter_flag >0) {
+    		filterCourse = filterEN.call_filter(CBList, myCourseList);
+    	}else {
+    		filterCourse = myCourseList;
+    	}
     	
     	// print text on console after filtering
-//    	for (Course c:filterCourse) {
-//    		String newline = c.getTitle() + "\n";
-//    		for (int i = 0;i<c.getNumSlots();i++) {
-//    			Slot curr_slot = c.getSlot(i);
-//    			newline += "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
-//    		}
-//    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
-//    	} 	
+    	for (Course c:filterCourse) {
+    		String newline = c.getTitle() + "\n";
+    		for (int i = 0;i<c.getNumSlots();i++) {
+    			Slot curr_slot = c.getSlot(i);
+    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
+    		}
+    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+    	} 	
     	enrollmentUpdate();
     	updateList();
     	
@@ -439,12 +446,28 @@ public class Controller  implements Initializable{
     	sectionCode.setCellValueFactory(new PropertyValueFactory<Courselist,String>("section"));
     	courseName.setCellValueFactory(new PropertyValueFactory<Courselist,String>("courseName"));
     	instructor.setCellValueFactory(new PropertyValueFactory<Courselist,String>("instructor"));
-    	enrollbox.setCellValueFactory(new PropertyValueFactory<Courselist,Boolean>("enroll"));
+    	enrollbox.setCellValueFactory(new PropertyValueFactory<Courselist,CheckBox>("enroll"));
     	
     	tblist.clear();
     	tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
+
+
+    	
     	CourseListTable.setItems(tblist);
     	
+    	tblist.addListener(new ListChangeListener<Courselist>() {
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Courselist> c) {
+				// TODO Auto-generated method stub
+				while(c.next()) {
+					if(c.wasUpdated()) {
+						System.out.println("a change");
+						updateList();						
+					}
+				}
+			}
+    		
+    	});
 	}
     
     @FXML
