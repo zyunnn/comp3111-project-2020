@@ -2,9 +2,10 @@ package comp3111.coursescraper;
 
 import java.awt.Checkbox;
 import java.awt.event.ActionEvent;
-//import javafx.event.EventHandler;
+import javafx.event.EventHandler;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -13,6 +14,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -20,26 +22,34 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 
-//import javafx.scene.control.TableColumn;
 import javafx.concurrent.Task;
-//import javafx.scene.control.TableView;
+
 
 //for handling checkbox
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
 
-
+import java.net.URL;
 import java.util.Random;
+import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 /**
  * @author jacky tam
  *
  */
-public class Controller {
+public class Controller  implements Initializable{
 	private static List<Course> myCourseList;
 	private List<Course> filterCourse;
-    private List<String> myEnrolledCourseList = new ArrayList<String>();
+	private List<String> EnrolledCourse = new ArrayList<String>();
 	
 	
     @FXML
@@ -101,43 +111,9 @@ public class Controller {
     
     @FXML
     private Button SelectALL;
-    
-//    AmBox.selectedProperty().addListener(BoxListen);
-
-    // need a listener to listen the filter and identify the needs, then call the interface to call the functions
-    /*//    		textAreaConsole.setText(nimab);
-//    		AmBox.selectedProperty().addListener(listener);
-    		
-     * things needed
-     * event handler
-     * 	@FXML
-	void handleBox() {
-		textAreaConsole.setText("AM");
-	}
-	
-	@FXML
-	void handleBox2() {
-		textAreaConsole.setText("bye");
-	}
-	    
-     * listener
-     * 
-     * declare all the checkbox with fx:id
-     * 
-     * */
-    
-    
 
     @FXML
     private Tab tabList;
-    /*
-     * things needed
-     * observe list
-     * 
-     * checkbox updater
-     * 
-     * 
-     * */
 
     @FXML
     private Tab tabTimetable;
@@ -185,6 +161,11 @@ public class Controller {
     private TableColumn<Courselist, CheckBox> enrollbox;
     
     @FXML
+    void switchToList() {
+    	handleBox();
+    }
+    
+    @FXML
     void handleSelectAll() {
     	if (SelectALL.getText().equals("Select All")) {
     		SelectALL.setText("De-select All");
@@ -218,56 +199,172 @@ public class Controller {
     	}
     };
     
+//    private ObservableList<Courselist> tblist = FXCollections.observableArrayList();
+    private ObservableList<Courselist> tblist = FXCollections.observableArrayList(item -> new javafx.beans.Observable[] {item.checkedProperty()});
+
     
+    @FXML
     void enrollmentUpdate() {
     	
+    	if (filterCourse == null) {
+    		tblist.clear();
+    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
+    		return;
+    	}
+    	/*
+    	 * store the list of enrolled course
+    	 * */
+    	for (int i =0;i< CourseListTable.getItems().size();i++) {
+    		String courseIDString = CourseListTable.getItems().get(i).getCourseCode() + "--" + CourseListTable.getItems().get(i).getSection();
+    		if (CourseListTable.getItems().get(i).getEnroll().isSelected()) {
+    			if(EnrolledCourse.contains(courseIDString) == false) {
+    				EnrolledCourse.add(courseIDString);
+    			}
+    		}else {
+    			if(EnrolledCourse.contains(courseIDString) == true) {
+    				EnrolledCourse.remove(courseIDString);
+    			}
+    		}
+    	}   
     }
     
     void updateList() {
-    	this.myEnrolledCourseList.clear();
-    	if (filterCourse == )
+    	this.tblist.clear();
+//    	textAreaConsole.setText("enter");
+
+//    	if (filterCourse == null) {
+//    		tblist.clear();
+//    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
+//    		return;
+//    	}
+    	
+    	for (Course curr : filterCourse) {
+    		Set<String> checkedID = new HashSet<String>();
+    		String [] titleL = curr.getTitle().split("\\ -");
+    		
+    		for(int i=0;i<curr.getNumSlots();i++) {
+    			Courselist currCour = new Courselist(titleL[0], curr.getSlot(i).getSectionCode(), titleL[1], curr.getSlot(i).getInstructor());
+    			String CourRefID = titleL[0] + "--" + curr.getSlot(i).getSectionCode();
+//    			textAreaConsole.setText(CourRefID+"2222222222222222222222");
+    			
+    			if (EnrolledCourse.contains(CourRefID)) {
+    				currCour.getEnroll().setSelected(true);
+    			}
+    			
+    	    	for(int k = 0; k < EnrolledCourse.size(); k++) {
+    	    		System.out.println(EnrolledCourse.get(k));
+    	    	}
+    			/* if this course section has not been added to the table list
+    			 * add the course section the checkedID reference set
+    			 * and add this course section to the table list to show it
+    			 */
+    			if(checkedID.contains(CourRefID) == false) {
+    				checkedID.add(CourRefID);
+    				tblist.add(currCour);
+    			}    			     			   			
+    		}
+    		
+    	}
+    	courseCode.setEditable(false);
+    	sectionCode.setEditable(false);
+    	courseName.setEditable(false);
+    	instructor.setEditable(false);
+    	enrollbox.setEditable(true);
+    	
+
+    	
+    	return;
+    	
     }
     
     @FXML
     void handleBox() {
     	textAreaConsole.clear();
     	// intitate the filter checklist and pass to the filter class to process
-//    	filterCourse = myCourseList;
-    	this.filterCourse.clear();
+    	filterCourse = new ArrayList<Course>();
     	Filter filterEN = new Filter();
-    	CheckBox[] CBList = new CheckBox[11];
-    	CBList[0] = AmBox;
-    	CBList[1] = PmBox;
-    	CBList[2] = MondayBox;
-    	CBList[3] = TuesdayBox;
-    	CBList[4] = WednesdayBox;
-    	CBList[5] = ThursdayBox;
-    	CBList[6] = FridayBox;
-    	CBList[7] = SaturdayBox;
-    	CBList[8] = CCBox;
-    	CBList[9] = NExclBox;
-    	CBList[10] = LabBox;
-    	filterCourse = filterEN.call_filter(CBList, myCourseList);
+    	Boolean []CBList = new Boolean[11];
+    	Arrays.fill(CBList, Boolean.FALSE);
+    	int filter_flag = 0;
+
     	
+    	if (AmBox.isSelected()) {
+    		CBList[0] = true;
+    		filter_flag ++;
+//    		System.out.println("captured");
+    	}
+    	if (PmBox.isSelected()) {
+    		CBList[1] = true;
+    		filter_flag ++;
+    	}
+    	
+    	if (MondayBox.isSelected()) {
+    		CBList[2] = true;
+    		filter_flag ++;
+//    		System.out.println("mon");
+    	}
+    	
+    	if (TuesdayBox.isSelected()) {
+    		CBList[3] = true;
+    		filter_flag ++;
+//    		System.out.println("tue");
+
+    	}
+    	if (WednesdayBox.isSelected()) {
+    		CBList[4] = true;
+    		filter_flag ++;
+//    		System.out.println("wed");
+    	}
+    	if (ThursdayBox.isSelected()) {
+    		CBList[5] = true;
+    		filter_flag ++;
+    	}
+    	if (FridayBox.isSelected()) {
+    		CBList[6] = true;
+    		filter_flag ++;
+    	}
+    	if (SaturdayBox.isSelected()) {
+    		CBList[7] = true;
+    		filter_flag ++;
+    	}
+    	if (CCBox.isSelected()) {
+    		CBList[8] = true;
+    		filter_flag ++;
+    	}
+    	if (NExclBox.isSelected()) {
+    		CBList[9] = true;
+    		filter_flag++;
+    	}
+    	if (LabBox.isSelected()) {
+    		CBList[10] = true;
+    		filter_flag ++;
+    	}
+    	
+    	if(filter_flag >0) {
+    		filterCourse = filterEN.call_filter(CBList, myCourseList);
+    	}else {
+    		filterCourse = myCourseList;
+    	}
     	
     	// print text on console after filtering
-    	for (Course c:this.filterCourse) {
+    	for (Course c:filterCourse) {
     		String newline = c.getTitle() + "\n";
-    		for (int i = 1;i<c.getNumSlots();i++) {
+    		for (int i = 0;i<c.getNumSlots();i++) {
     			Slot curr_slot = c.getSlot(i);
-    			newline += "Section " + curr_slot.getSections() + " Slot " + i + ":" + curr_slot.toString();
+    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
     		}
     		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
     	} 	
     	enrollmentUpdate();
     	updateList();
+    	
+
     	return;
     }
-    
+
     
     private Scraper scraper = new Scraper();
     
-    private static List<Course> myCourseList;
     
     @FXML
     void allSubjectSearch() {
@@ -341,6 +438,37 @@ public class Controller {
     		System.out.println("Finished subject search");
     		});
     	}
+
+    
+    @Override
+	public void initialize(URL url, ResourceBundle rb) {
+		courseCode.setCellValueFactory(new PropertyValueFactory<Courselist,String>("courseCode"));
+    	sectionCode.setCellValueFactory(new PropertyValueFactory<Courselist,String>("section"));
+    	courseName.setCellValueFactory(new PropertyValueFactory<Courselist,String>("courseName"));
+    	instructor.setCellValueFactory(new PropertyValueFactory<Courselist,String>("instructor"));
+    	enrollbox.setCellValueFactory(new PropertyValueFactory<Courselist,CheckBox>("enroll"));
+    	
+    	tblist.clear();
+    	tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
+
+
+    	
+    	CourseListTable.setItems(tblist);
+    	
+    	tblist.addListener(new ListChangeListener<Courselist>() {
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Courselist> c) {
+				// TODO Auto-generated method stub
+				while(c.next()) {
+					if(c.wasUpdated()) {
+						System.out.println("a change");
+						updateList();						
+					}
+				}
+			}
+    		
+    	});
+	}
     
     @FXML
     void findInstructorSfq() {
@@ -393,6 +521,8 @@ public class Controller {
         	}
     	}	
     }
+	
+
 	
 
 

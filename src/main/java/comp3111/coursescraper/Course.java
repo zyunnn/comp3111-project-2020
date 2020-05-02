@@ -21,6 +21,17 @@ public class Course {
 		numSlots = 0;
 	}
 	
+	@SuppressWarnings("static-access")
+	public Course clone() {
+		Course one = new Course();
+		one.setDescription(this.description);
+		one.setExclusion(this.exclusion);
+		one.setTitle(this.title);
+		one.numCourse = this.getNumCourse();
+		one.allCourse = this.getAllCourse();
+		return one;
+	}
+	
 	public void addSlot(Slot s) {
 		if (numSlots >= DEFAULT_MAX_SLOT)
 			return;
@@ -36,6 +47,7 @@ public class Course {
 		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
 		numSlots = 0;
 	}
+
 
 	/**
 	 * @return the title
