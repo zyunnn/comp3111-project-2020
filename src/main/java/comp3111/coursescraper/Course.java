@@ -21,6 +21,16 @@ public class Course {
 		numSlots = 0;
 	}
 	
+	public Course clone() {
+		Course one = new Course();
+		one.setDescription(this.description);
+		one.setExclusion(this.exclusion);
+		one.setTitle(this.title);
+		one.numCourse = this.getNumCourse();
+		one.allCourse = this.getAllCourse();
+		return one;
+	}
+	
 	public void addSlot(Slot s) {
 		if (numSlots >= DEFAULT_MAX_SLOT)
 			return;

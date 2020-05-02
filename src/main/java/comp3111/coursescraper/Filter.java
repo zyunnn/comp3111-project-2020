@@ -29,7 +29,7 @@ public class Filter {
     	CBList[10] = LabBox;
 	 * */
 	public List<Course> call_filter (Boolean [] CBList, List<Course> input) {
-		List<Course> temp = new ArrayList<Course>(input);
+		List<Course> temp = input;
 
 
 		boolean flag = false;
@@ -38,12 +38,13 @@ public class Filter {
     		flag = true;
     		System.out.println("captured");
     	}else if (CBList[0]==true && CBList[1]==false) {
-    		temp = new ArrayList<Course>(filtertime(temp, true, false));
+    		temp = filtertime(temp, true, false);
     		flag = true;
     	}else if (CBList[0]==false && CBList[1]==true){
     		temp = new ArrayList<Course>(filtertime(temp, false, true));
     		flag = true;
     	}
+    	
     	boolean mon_flag = false;
     	boolean tue_flag = false;
     	boolean wed_flag = false;
@@ -118,7 +119,7 @@ public class Filter {
 		for (int i = 1; i < input.size(); i++) {
 			Course curr_course = input.get(i);
 			Course to_add = new Course();
-			to_add.Clone(curr_course);
+			to_add = curr_course.clone();
 			Set<String> section_flag = new HashSet<String>();
 			Set<String> section_AMPM = new HashSet<String>();
 			Set<String> section_AM = new HashSet<String>();
@@ -128,15 +129,15 @@ public class Filter {
 			for (int j = 0; j < curr_course.getNumSlots();j++) {
 				Slot curr_slot = curr_course.getSlot(j);
 				if ((curr_slot.getStartHour()<=12)&&(curr_slot.getEndHour()>12)) {
-					section_AMPM.add(curr_slot.getSections());
+					section_AMPM.add(curr_slot.getSectionCode());
 				}
 				if	((curr_slot.getStartHour()<=12)) {
-					section_AM.add(curr_slot.getSections());
+					section_AM.add(curr_slot.getSectionCode());
 					System.out.println("captured3332");
 
 				}
 				if	((curr_slot.getStartHour()>12)) {
-					section_PM.add(curr_slot.getSections());
+					section_PM.add(curr_slot.getSectionCode());
 				}
 			}
 			
@@ -154,18 +155,16 @@ public class Filter {
 			// add the section to return result
 			for (int j = 0; j < curr_course.getNumSlots();j++) {
 				Slot curr_slot = curr_course.getSlot(j);
-				if (section_flag.contains(curr_slot.getSections())) {
-					to_add.addSlot(curr_slot.clone());
+				if (section_flag.contains(curr_slot.getSectionCode())) {
+					to_add.addSlot(curr_slot);
 				}
 			}
 			// add the section 
 			result.add(to_add);
 		}
-		if (result.isEmpty()) {
-			return input;
-		}else {
+
 			return result;
-		}
+		
 
 	};	
 	
@@ -197,22 +196,22 @@ public class Filter {
 			for (int j = 0; j < curr_course.getNumSlots();j++) {
 				Slot curr_slot = curr_course.getSlot(j);
 				if (curr_slot.getDay() == 0) {
-					section_Mon.add(curr_slot.getSections());
+					section_Mon.add(curr_slot.getSectionCode());
 				}
 				if (curr_slot.getDay() == 1) {
-					section_Tue.add(curr_slot.getSections());
+					section_Tue.add(curr_slot.getSectionCode());
 				}
 				if (curr_slot.getDay() == 2) {
-					section_Wed.add(curr_slot.getSections());
+					section_Wed.add(curr_slot.getSectionCode());
 				}
 				if (curr_slot.getDay() == 3) {
-					section_Thur.add(curr_slot.getSections());
+					section_Thur.add(curr_slot.getSectionCode());
 				}
 				if (curr_slot.getDay() == 4) {
-					section_Fri.add(curr_slot.getSections());
+					section_Fri.add(curr_slot.getSectionCode());
 				}
 				if (curr_slot.getDay() == 5) {
-					section_Sat.add(curr_slot.getSections());
+					section_Sat.add(curr_slot.getSectionCode());
 				}
 
 			}
@@ -259,7 +258,7 @@ public class Filter {
 			// add the section to return result
 			for (int j = 0; j < curr_course.getNumSlots();j++) {
 				Slot curr_slot = curr_course.getSlot(j);
-				if (section_flag.contains(curr_slot.getSections())) {
+				if (section_flag.contains(curr_slot.getSectionCode())) {
 					to_add.addSlot(curr_slot);
 				}
 			}
