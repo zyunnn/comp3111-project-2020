@@ -1,7 +1,10 @@
 package comp3111.coursescraper;
 
 import java.net.URLEncoder;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
@@ -11,6 +14,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import java.util.Vector;
+
 
 
 /**
@@ -87,23 +91,68 @@ public class Scraper {
 		client.getOptions().setJavaScriptEnabled(false);
 	}
 
-	private void addSlot(HtmlElement e, Course c, boolean secondRow) {
+	private void addSlot(HtmlElement e, Course c, boolean secondRow, String sectionCode) {
+
 		String times[] =  e.getChildNodes().get(secondRow ? 0 : 3).asText().split(" ");
 		String venue = e.getChildNodes().get(secondRow ? 1 : 4).asText();
-		if (times[0].equals("TBA"))
+		String instructorName = e.getChildNodes().get(secondRow ? 2 : 5).asText();
+		
+		// Invalid time slot
+		if (times[0].equals("TBA"))		
 			return;
-		for (int j = 0; j < times[0].length(); j+=2) {
-			String code = times[0].substring(j , j + 2);
-			if (Slot.DAYS_MAP.get(code) == null)
+		
+		String startAt = times[1];
+		String endAt = times[3];
+		String classDay = times[0];
+		
+		// Different time format
+		if (classDay.length() == 11) {
+			classDay = times[2].split("\n")[1];
+			startAt = times[3];
+			endAt = times[5];
+		}
+		
+		// Check 9:00am to 10:00pm time slot
+		LocalTime startTime = LocalTime.parse(startAt, DateTimeFormatter.ofPattern("hh:mma", Locale.US));
+		LocalTime endTime = LocalTime.parse(endAt, DateTimeFormatter.ofPattern("hh:mma", Locale.US));
+		if (startTime.compareTo(LocalTime.parse("09:00:00")) < 0 &&
+				endTime.compareTo(LocalTime.parse("22:00:00")) > 0) {
+			return;
+		}
+		
+		// Raise flag for Tuesday 3:10pm
+		boolean tuFlag = false;
+		for (int j = 0; j < classDay.length(); j+=2) {
+			String code = classDay.substring(j , j + 2);
+			if (Slot.DAYS_MAP.get(code) == null)	// Invalid Sunday slot
 				break;
 			Slot s = new Slot();
 			s.setDay(Slot.DAYS_MAP.get(code));
-			s.setStart(times[1]);
-			s.setEnd(times[3]);
+			s.setStart(startAt);
+			s.setEnd(endAt);
 			s.setVenue(venue);
-			c.addSlot(s);	
+			s.setSectionCode(sectionCode);
+			s.setInstructor(instructorName);
+			c.addSlot(s);
+			
+			// Check teaching assignment on Tuesday 15:10
+			if (startTime.compareTo(LocalTime.parse("15:10:00")) <= 0 &&
+					endTime.compareTo(LocalTime.parse("15:10:00")) >= 0 &&
+					code.equals("Tu")) {
+				tuFlag = true;
+			}
+			
+			// Get list of instructors
+			String nameList[] = instructorName.split("\n");
+			for (String name : nameList) {
+				if (!name.equals("TBA") && !name.equals(" ")) {
+					Instructor.addAllInstructor(name);
+					if (tuFlag) {
+						Instructor.addTeachingTu1510(name);
+					}
+				}
+			}	
 		}
-
 	}
 
 	public List<Course> scrape(String baseurl, String term, String sub) {
@@ -111,8 +160,6 @@ public class Scraper {
 		try {
 			
 			HtmlPage page = client.getPage(baseurl + "/" + term + "/subject/" + sub);
-
-			
 			List<?> items = (List<?>) page.getByXPath("//div[@class='course']");
 			
 			Vector<Course> result = new Vector<Course>();
@@ -136,21 +183,80 @@ public class Scraper {
 				c.setExclusion((exclusion == null ? "null" : exclusion.asText()));
 				
 				List<?> sections = (List<?>) htmlItem.getByXPath(".//tr[contains(@class,'newsect')]");
-				for ( HtmlElement e: (List<HtmlElement>)sections) {
-					addSlot(e, c, false);
-					e = (HtmlElement)e.getNextSibling();
-					if (e != null && !e.getAttribute("class").contains("newsect"))
-						addSlot(e, c, true);
-				}
 				
-				result.add(c);
+				// Add slot information
+				boolean validCourseFlag = false;		
+				for ( HtmlElement e: (List<HtmlElement>)sections) {
+					Section s = new Section(e);
+					if (!s.validSection()) 
+						continue;
+							
+					Section.incrementNumSections();
+					validCourseFlag = true;
+					addSlot(e, c, false, s.getSectionCode());
+					e = (HtmlElement)e.getNextSibling();
+					
+					if (e != null && !e.getAttribute("class").contains("newsect"))
+						addSlot(e, c, true, s.getSectionCode());
+				}
+				Course.incrementAllCourse();
+				
+				// Keep track for course with at least 1 valid section
+				if (validCourseFlag) {		
+					Course.incrementNumCourse();
+					result.add(c);
+				}
+				// Debugging purpose
+				else
+					System.out.println("Invalid course: " + c.getTitle());
 			}
 			client.close();
 			return result;
-		} catch (Exception e) {
-			System.out.println(e);
+		} 
+		catch (Exception e) {
+			// Handle Error 404
+			if (e instanceof com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException &&
+					e.getMessage().substring(0,3).equals("404")) {
+				Vector<Course> invalid = new Vector<Course>();
+				Course dummy = new Course();
+				dummy.setTitle(e.getMessage());
+				invalid.add(dummy);
+				return invalid;
+			} else {
+				System.out.println(e);
+			}
 		}
 		return null;
 	}
+		
+	
+	public List<String> scrapeAllSubject(String baseurl, String term) {
+		
+		try {
+			HtmlPage page = client.getPage(baseurl + "/" + term + "/");
+			
+			List<?> items = (List<?>) page.getByXPath("//div[@id='navigator']/div[@class='depts']/a");
+			List<String> subjectList = new Vector<String>();
+			
+			for (int i = 0; i < items.size(); i++) {
+				subjectList.add(((HtmlElement) items.get(i)).asText());
+			}
+			client.close();
+			return subjectList;
+		}
+		catch (Exception e) {
+			
+			// Handle Error 404
+			if (e instanceof com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException &&
+					e.getMessage().substring(0,3).equals("404")) {
+				System.out.println("Invalid URL input for AllSubjectSearch");
+				return  null;
+			} else {
+				System.out.println(e);
+			}
+		}
+		return null;
+	}
+
 
 }
