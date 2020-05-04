@@ -154,7 +154,7 @@ public class Course {
 	 * @param common core details
 	 */
 	public void setCommonCore(String commonCore) {
-		System.out.println(title + "<_____details ------>" + commonCore);
+// 		System.out.println(title + "<_____details ------>" + commonCore);
 		if (commonCore.contains("Common"))
 			this.isCommonCore = true;
 		else
