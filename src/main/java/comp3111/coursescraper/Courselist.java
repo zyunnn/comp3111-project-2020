@@ -2,11 +2,14 @@
 
 package comp3111.coursescraper;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 
 public class Courselist {
@@ -104,5 +107,32 @@ public class Courselist {
         return checked;
       }
 
-	
+    public ObservableValue<CheckBox> getCheckBox() {
+        return new ObservableValue<CheckBox>() {
+            @Override
+            public void addListener(ChangeListener<? super CheckBox> listener) {
+ 
+            }
+ 
+            @Override
+            public void removeListener(ChangeListener<? super CheckBox> listener) {
+ 
+            }
+ 
+            @Override
+            public CheckBox getValue() {
+                return enbox;
+            }
+ 
+            @Override
+            public void addListener(InvalidationListener listener) {
+ 
+            }
+ 
+            @Override
+            public void removeListener(InvalidationListener listener) {
+ 
+            }
+        };
+    }
 }

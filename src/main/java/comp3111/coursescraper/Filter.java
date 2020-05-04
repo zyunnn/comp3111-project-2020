@@ -107,10 +107,10 @@ public class Filter {
     	List<Course> cour_re = new ArrayList<Course>();
     	
     	for (Course curr_input:temp) {
-			System.out.println(curr_input.getTitle() + " " + curr_input.getNumSlots());
-			System.out.println(curr_input.getDescription());
-			System.out.println(curr_input.getExclusion());
-			System.out.println("********************");
+//			System.out.println(curr_input.getTitle() + " " + curr_input.getNumSlots());
+//			System.out.println(curr_input.getDescription());
+//			System.out.println(curr_input.getExclusion());
+//			System.out.println("********************");
 
     		if(curr_input.getNumSlots() == 0) {
     			continue;
