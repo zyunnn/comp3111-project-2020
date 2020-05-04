@@ -107,6 +107,11 @@ public class Filter {
     	List<Course> cour_re = new ArrayList<Course>();
     	
     	for (Course curr_input:temp) {
+			System.out.println(curr_input.getTitle() + " " + curr_input.getNumSlots());
+			System.out.println(curr_input.getDescription());
+			System.out.println(curr_input.getExclusion());
+			System.out.println("********************");
+
     		if(curr_input.getNumSlots() == 0) {
     			continue;
     		}
@@ -132,50 +137,54 @@ public class Filter {
 					section_flag.retainAll( date_temp);
 				}
 			}
-//			System.out.println("*******************************************************");
-//			System.out.println();
-
         	
            boolean flag_add = true;
+           boolean flag_add_cc = true;
+           boolean flag_add_ex = true;
+           boolean flag_add_lab = true;
 //        	if (cc_flag>0) {
 //        		if (curr_input.checkcc() == true) {
-//        			flag_add = true;
-           
-//					if (section_flag.isEmpty()) {
-//						section_flag.addAll(allsection(curr_input));
-//					}
-//           		section_flag.retainAll(allsection(curr_input));
+//        			flag_add_cc = true;
 //        		}else {
 //        			flag_add = false;
 //        		}
 //        	}
         	
-        	if (ex_flag>0) {
-        		if (curr_input.getExclusion().isEmpty()) {
-        			flag_add = false;
+        	if (ex_flag>0) { 
+        		if (curr_input.getExclusion().equals("null") == false) {
+        			flag_add_ex = false; 
         		}else {
-        			flag_add = true;
-        			if (section_flag.isEmpty()) {
-        				section_flag.addAll(allsection(curr_input));
-        			}else {
-        				section_flag.retainAll(allsection(curr_input));
-        			}
+        			flag_add_ex = true;
         		}
         	}
         	
-        	if (lab_flag>0) {
-        		if (checklab(curr_input).isEmpty()) {
-        			flag_add = false;
+        	if (lab_flag>0) { 
+        		if (checklab(curr_input) == false) {
+        			flag_add_lab = false;
         		}else {
-        			flag_add = true;
-        			if (section_flag.isEmpty()) {
-        				section_flag.addAll(checklab(curr_input));
-        			}else {
-        				section_flag.retainAll(checklab(curr_input));
-        			}
+        			flag_add_lab = true;
         		}
         	}
         	
+        	if(cc_flag>0 && !flag_add_cc) {
+        		flag_add = false;
+        	}
+        	
+        	if(ex_flag>0 && !flag_add_ex) {
+        		flag_add = false;
+        	}
+        	
+        	if(lab_flag>0&& !flag_add_lab) {
+        		flag_add = false;
+        	}
+        	
+        	if(flag_add) {
+    			if (section_flag.isEmpty()) {
+    				section_flag.addAll(allsection(curr_input));
+    			}else {
+    				section_flag.retainAll(allsection(curr_input));
+    			}
+        	}
         	
 			if(section_flag.isEmpty() == false) {
 	        	for (int i = 0; i<curr_input.getNumSlots();i++) {
@@ -194,18 +203,14 @@ public class Filter {
 	}
 	
 	
-	public Set<String> checklab(Course in) {
-		Set<String> ans = new HashSet<String>();
-		for (int i = 1; i<in.getNumSlots();i++) {
+	public boolean checklab(Course in) {
+		
+		for (int i = 0; i<in.getNumSlots();i++) {
 			if (in.getSlot(i).getSectionCode().contains("LA")||in.getSlot(i).getSectionCode().contains("T")) {
-				ans.add(in.getSlot(i).getSectionCode());
+				return true;
 			}
 		}
-		if (ans.isEmpty()) {
-			return new HashSet<String>();
-		}else {
-			return ans;
-		}
+		return false;
 	}
 	
 	
@@ -232,7 +237,7 @@ public class Filter {
 				section_AM.add(curr_slot.getSectionCode());
 			}
 			
-			if	((curr_slot.getStartHour()>=12)) {
+			if	((curr_slot.getEndHour()>=12)) {
 				section_PM.add(curr_slot.getSectionCode());
 			}
 		}
@@ -246,9 +251,9 @@ public class Filter {
 		}else if ((AMM == true) && (PMM == false)){
 			section_flag.addAll(section_AM);
 //			System.out.println("2");
-			if(section_flag.isEmpty()) {
-//				System.out.println("error");
-			}
+//			if(section_flag.isEmpty()) {
+////				System.out.println("error");
+//			}
 
 		}else if ((AMM == false) && (PMM == true)) {
 			section_flag.addAll(section_PM);
@@ -381,7 +386,7 @@ public class Filter {
 	
 	public Set<String> allsection (Course c){
 		Set<String> ans = new HashSet<String>();
-		for (int i = 1;i<c.getNumSlots();i++) {
+		for (int i = 0;i<c.getNumSlots();i++) {
 			ans.add(c.getSlot(i).getSectionCode());
 		}
 		return ans;
