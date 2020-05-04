@@ -2,6 +2,8 @@ package comp3111.coursescraper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 
+import javafx.scene.control.CheckBox;
+
 public class Section {
 	
 	private String sectionId;		// 1808 refers to "COMP 1029J L1"
@@ -9,8 +11,8 @@ public class Section {
 	private boolean validFlag;
 	static private int numSections;
 	
-	
 	public Section(HtmlElement e) {
+
 		String[] sectionInfo = e.getChildNodes().get(1).asText().split(" ");
 		sectionCode = sectionInfo[0];
 		sectionId = sectionInfo[1].substring(1,5);
@@ -51,6 +53,7 @@ public class Section {
 		numSections = 0;
 	}
 	
+
 	/**
 	 * @return code of the section
 	 */
@@ -64,4 +67,5 @@ public class Section {
 	public String getSectionId() {
 		return sectionId;
 	}
+
  }
