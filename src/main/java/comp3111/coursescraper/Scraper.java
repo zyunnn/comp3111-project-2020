@@ -171,6 +171,7 @@ public class Scraper {
 				HtmlElement title = (HtmlElement) htmlItem.getFirstByXPath(".//h2");
 				c.setTitle(title.asText());
 				
+				// Exclusion subject
 				List<?> popupdetailslist = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
 				HtmlElement exclusion = null;
 				for ( HtmlElement e : (List<HtmlElement>)popupdetailslist) {
@@ -182,8 +183,31 @@ public class Scraper {
 				}
 				c.setExclusion((exclusion == null ? "null" : exclusion.asText()));
 				
-				List<?> sections = (List<?>) htmlItem.getByXPath(".//tr[contains(@class,'newsect')]");
+				// Common core subject
+				List<?> popupdetailslist2 = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
+				HtmlElement commonCore = null;
+				for ( HtmlElement e : (List<HtmlElement>)popupdetailslist2) {
+					HtmlElement t = (HtmlElement) e.getFirstByXPath(".//th");
+					HtmlElement d = (HtmlElement) e.getFirstByXPath(".//td");
+					if (t.asText().equals("ATTRIBUTES")) {
+						commonCore = d;
+					}
+				}
+				c.setCommonCore((commonCore == null ? "null" : commonCore.asText()));
 				
+				// Description of subject
+				List<?> popupdetailslist3 = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
+				HtmlElement description = null;
+				for ( HtmlElement e : (List<HtmlElement>)popupdetailslist3) {
+					HtmlElement t = (HtmlElement) e.getFirstByXPath(".//th");
+					HtmlElement d = (HtmlElement) e.getFirstByXPath(".//td");
+					if (t.asText().equals("DESCRIPTION")) {
+						description = d;
+					}
+				}
+				c.setDescription((description == null ? "null" : description.asText()));
+				
+				List<?> sections = (List<?>) htmlItem.getByXPath(".//tr[contains(@class,'newsect')]");
 				// Add slot information
 				boolean validCourseFlag = false;		
 				for ( HtmlElement e: (List<HtmlElement>)sections) {
