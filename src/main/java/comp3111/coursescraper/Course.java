@@ -14,6 +14,7 @@ public class Course {
 
 	private Slot [] slots;
 	private int numSlots;
+	private boolean isCommonCore;
 	
 	public Course() {
 		slots = new Slot[DEFAULT_MAX_SLOT];
@@ -148,5 +149,23 @@ public class Course {
 	}
 
 
+	
+	/**
+	 * @param common core details
+	 */
+	public void setCommonCore(String commonCore) {
+// 		System.out.println(title + "<_____details ------>" + commonCore);
+		if (commonCore.contains("Common"))
+			this.isCommonCore = true;
+		else
+			this.isCommonCore = false;
+	}
+	
+	/**
+	 * @return if course is a common core
+	 */
+	public boolean checkCommonCore() {
+		return isCommonCore;
+	}
 	
 }
