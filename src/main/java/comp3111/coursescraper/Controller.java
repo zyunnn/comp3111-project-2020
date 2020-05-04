@@ -13,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -25,8 +26,10 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.util.Callback;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import javafx.concurrent.Task;
@@ -163,10 +166,12 @@ public class Controller  implements Initializable{
 
     @FXML
     private TableColumn<Courselist, CheckBox> enrollbox;
+//    private TableColumn<Courselist, Boolean> enrollbox;
     
     @FXML
     void switchToList() {
     	handleBox();
+    	course_enrollment_start();
     }
     
     @FXML
@@ -206,7 +211,34 @@ public class Controller  implements Initializable{
 //    private ObservableList<Courselist> tblist = FXCollections.observableArrayList();
     private ObservableList<Courselist> tblist = FXCollections.observableArrayList(item -> new javafx.beans.Observable[] {item.checkedProperty()});
 
+
+    private void course_enrollment_start() {
+    	enrollmentUpdate();
+    	textAreaConsole.clear();
+    	textAreaConsole.setText("The following sections are enrolled:" );
+    	
+    	// print all the enrolled course
+
+    	for (String Cour_ID:EnrolledCourse) {
+    		String enrolled_text = Cour_ID;
+    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + enrolled_text);
+    	}
+		textAreaConsole.setText(textAreaConsole.getText() + "\n" + "\n" + "The list of courses after filter are:"+ "\n");
+
+    	
+    	// print all the filter infomartion
+    	for (Course c:filterCourse) {
+    		String newline = c.getTitle() + "\n";
+    		for (int i = 0;i<c.getNumSlots();i++) {
+    			Slot curr_slot = c.getSlot(i);
+    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
+    		}
+    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+    	}
+    }
+
     //After handlebox function
+
     @FXML
     void enrollmentUpdate() {
     	
@@ -253,14 +285,15 @@ public class Controller  implements Initializable{
     	this.tblist.clear();
 //    	textAreaConsole.setText("enter");
 
-//    	if (filterCourse == null) {
-//    		tblist.clear();
-//    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
-//    		return;
-//    	}
 
-    	/* Get num slooooooooooooooooooot!*/
+    	if (filterCourse == null) {
+    		tblist.clear();
+    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
+    		return;
+    	}
     	
+      
+      /* Get num slooooooooooooooooooot!*/
     	for (Course curr : filterCourse) {
     		Set<String> checkedID = new HashSet<String>();
     		String [] titleL = curr.getTitle().split("\\ -"); 
@@ -273,10 +306,6 @@ public class Controller  implements Initializable{
     			if (EnrolledCourse.contains(CourRefID)) {
     				currCour.getEnroll().setSelected(true);
     			}
-    			
-//    	    	for(int k = 0; k < EnrolledCourse.size(); k++) {
-  //  	    		System.out.println(EnrolledCourse.get(k));
-    //	    	}
     			/* if this course section has not been added to the table list
     			 * add the course section the checkedID reference set
     			 * and add this course section to the table list to show it
@@ -289,6 +318,7 @@ public class Controller  implements Initializable{
     		}
     		
     	}
+//    	tblist.get(0).getEnroll()
     	courseCode.setEditable(false);
     	sectionCode.setEditable(false);
     	courseName.setEditable(false);
@@ -383,7 +413,6 @@ public class Controller  implements Initializable{
     	updateList();
     	drawtable();
     	
-
     	return;
     }
 
@@ -476,8 +505,42 @@ public class Controller  implements Initializable{
     	sectionCode.setCellValueFactory(new PropertyValueFactory<Courselist,String>("section"));
     	courseName.setCellValueFactory(new PropertyValueFactory<Courselist,String>("courseName"));
     	instructor.setCellValueFactory(new PropertyValueFactory<Courselist,String>("instructor"));
+//    	enrollbox.setCellValueFactory(new PropertyValueFactory<Courselist,CheckBox>("enroll"));
+//    	enrollbox= new CheckBoxTableCell<Courselist, Boolean>());
+//		*********************
+    	Callback<TableColumn<Courselist,CheckBox>, TableCell<Courselist,CheckBox>> selectCellFactory =
+        new Callback<TableColumn<Courselist,CheckBox>, TableCell<Courselist,CheckBox>>() {
+			@Override
+            public TableCell<Courselist, CheckBox> call(TableColumn<Courselist, CheckBox> p) {
+                TableCell<Courselist, CheckBox> cell = new TableCell<Courselist,CheckBox>() {
+                    @Override
+                    public void updateItem(CheckBox item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setGraphic(item);
+                        if (item != null) {
+                            item.selectedProperty()
+                                    .addListener(new ChangeListener<Boolean>() {
+                                        @Override
+                                        public void changed(
+                                                ObservableValue<? extends Boolean> observable,
+                                                Boolean oldValue, Boolean newValue) {
+//                                        		System.out.println("sadsdddd");
+                                        		course_enrollment_start();
+                                        }
+                                    });
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        enrollbox.setCellFactory(selectCellFactory);
     	enrollbox.setCellValueFactory(new PropertyValueFactory<Courselist,CheckBox>("enroll"));
-    	
+    	enrollbox.setCellValueFactory(cellData -> cellData.getValue().getCheckBox());
+
+
+
+//    	*********************
     	tblist.clear();
     	tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
 
@@ -485,19 +548,19 @@ public class Controller  implements Initializable{
     	
     	CourseListTable.setItems(tblist);
     	
-    	tblist.addListener(new ListChangeListener<Courselist>() {
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Courselist> c) {
-				// TODO Auto-generated method stub
-				while(c.next()) {
-					if(c.wasUpdated()) {
-						System.out.println("a change");
-						updateList();						
-					}
-				}
-			}
-    		
-    	});
+//    	tblist.addListener(new ListChangeListener<Courselist>() {
+//			@Override
+//			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Courselist> c) {
+//				// TODO Auto-generated method stub
+//				while(c.next()) {
+//					if(c.wasUpdated()) {
+//						System.out.println("a change");
+//						updateList();						
+//					}
+//				}
+//			}
+//    		
+//    	});
 	}
     
     @FXML
