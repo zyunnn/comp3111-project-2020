@@ -662,8 +662,8 @@ public class Controller  implements Initializable{
     	randomLabel2.setMaxWidth(100.0);
     	randomLabel2.setMinHeight(60);
     	randomLabel2.setMaxHeight(60);
-    	randomLabel2.setblendmode;
-    	String address = getParameter("adress");
+//    	randomLabel2.setblendmode;
+//    	String address = getParameter("adress");
     	ap.getChildren().addAll(randomLabel2);
 	}
 	
