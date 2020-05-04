@@ -230,13 +230,13 @@ public class Controller  implements Initializable{
     
     void updateList() {
     	this.tblist.clear();
-//    	textAreaConsole.setText("enter");
+    	textAreaConsole.setText("enter");
 
-//    	if (filterCourse == null) {
-//    		tblist.clear();
-//    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
-//    		return;
-//    	}
+    	if (filterCourse == null) {
+    		tblist.clear();
+    		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
+    		return;
+    	}
     	
     	for (Course curr : filterCourse) {
     		Set<String> checkedID = new HashSet<String>();
