@@ -142,13 +142,13 @@ public class Filter {
            boolean flag_add_cc = true;
            boolean flag_add_ex = true;
            boolean flag_add_lab = true;
-//        	if (cc_flag>0) {
-//        		if (curr_input.checkcc() == true) {
-//        			flag_add_cc = true;
-//        		}else {
-//        			flag_add = false;
-//        		}
-//        	}
+        	if (cc_flag>0) {
+        		if (curr_input.checkCommonCore() == true) {
+        			flag_add_cc = true;
+        		}else {
+        			flag_add = false;
+        		}
+        	}
         	
         	if (ex_flag>0) { 
         		if (curr_input.getExclusion().equals("null") == false) {
