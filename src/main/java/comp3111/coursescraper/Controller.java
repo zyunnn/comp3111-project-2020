@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -40,6 +41,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 
+// javafx scene effect for transparent table
+import javafx.scene.effect.Blend;   
+import javafx.scene.effect.BlendMode;
+
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -56,6 +61,8 @@ public class Controller  implements Initializable{
 	private static List<Course> myCourseList;
 	private List<Course> filterCourse;
 	private List<Course> drawCourse = new ArrayList<Course>();
+	private List<Course> drawedCourse = new ArrayList<Course>();
+	private List<Label> drawedLabel = new ArrayList<Label>();
 	private List<String> EnrolledCourse = new ArrayList<String>();
 	
 	
@@ -411,7 +418,7 @@ public class Controller  implements Initializable{
     	} 	
     	enrollmentUpdate();
     	updateList();
-    	drawtable();
+//    	drawtable();
     	
     	return;
     }
@@ -494,7 +501,7 @@ public class Controller  implements Initializable{
     	
     	// To draw the timetable if the enrollment is not yet implemented
     	if (enrollbox.isEditable()==false) {
-    		drawtable();
+//    		drawtable();
     	}
     	}
 
@@ -573,7 +580,8 @@ public class Controller  implements Initializable{
 
     @FXML
     void findSfqEnrollCourse() {
-
+    	// Just for testing, to run drawtable more quickly
+//    	drawtable();
     }
 
 	@FXML
@@ -624,17 +632,19 @@ public class Controller  implements Initializable{
     	
     	// To draw the timetable if the enrollment is not yet implemented
     	if (enrollbox.isEditable()==false) {
-    		drawtable();
+//    		drawtable();
     	}
     }
 	
 	
 	@FXML
 	void drawtable() {
+		System.out.println("Can you see me ?");
 		if (enrollbox.isEditable()==false) {
 			drawCourse.clear();
 			if (myCourseList.size()<5) {
 				drawCourse = myCourseList;
+				System.out.println("Works fine");
 			}
 			else {
 				for(int i = 0; i<5 ; i++) {
@@ -645,26 +655,115 @@ public class Controller  implements Initializable{
 		// drawCourse.get(0).getSlot(0).getEnd().gethour returns INTEGER value
 		
 		//TODO Draw the table!
+		//Transparency issue done
     	//Add a random block on Saturday
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
-    	Label randomLabel = new Label("COMP1022\nL1");
+    	
+    	for (Course drawcurr:drawCourse) {
+    		if (drawedCourse.contains(drawcurr)){
+    			continue;
+    		}
+    		
+    		
+    		Random r = new Random();
+//        	double start = (r.nextInt(10) + 1) * 20 + 40;
+        	double color1 = r.nextDouble();
+        	double color2 = r.nextDouble();
+        	double color3 = r.nextDouble();
+        	Color currColor = Color.color(color1, color2, color3, 0.3);
+    		
+        	// Pause the drawing to test
+/*    		for (int i = 0; i<drawcurr.getNumSlots(); i++) {
+    			
+    			Slot drawcurrSlot = drawcurr.getSlot(i);
+    			int drawDay = drawcurrSlot.getDay();
+    			int drawStartHour = drawcurrSlot.getStartHour();
+    			int drawEndHour = drawcurrSlot.getEndHour();
+    			int drawStartMin = drawcurrSlot.getStartMinute();
+    			int drawEndMin = drawcurrSlot.getEndMinute();
+    			
+    			double drawXlayout = (drawDay + 1) * 100;
+    			double drawYlayout = (drawStartHour - 8) * 20 + (drawStartMin) /3;
+    			
+    			double drawWidth = 100;
+    			double drawHeight = (drawEndHour - drawStartHour) * 20 + (drawEndMin - drawStartMin) / 3;
+    			
+    			String drawCode = drawcurr.getTitle().split("\\ -")[0] + "\n" + drawcurr.getSlot(i).getSectionCode();
+    			
+    			if (drawHeight < 20) {
+    				drawCode = drawcurr.getTitle().split("\\ -")[0] + " " + drawcurr.getSlot(i).getSectionCode();
+    			}
+    			
+    			Label drawLabel = new Label(drawCode);
+    			drawLabel.setBackground(new Background(new BackgroundFill(currColor, CornerRadii.EMPTY, Insets.EMPTY)));
+    			drawLabel.setLayoutX(drawXlayout);
+    			drawLabel.setLayoutY(drawYlayout);
+    			drawLabel.setMinHeight(drawHeight);
+    			drawLabel.setMaxHeight(drawHeight);
+    			drawLabel.setMinWidth(drawWidth);
+    			drawLabel.setMaxWidth(drawWidth);
+    			drawLabel.setTextFill(Color.WHITE);
+    			ap.getChildren().add(drawLabel);
+    			drawedLabel.add(drawLabel);
+    		}
+    		*/
+    		drawedCourse.add(drawcurr);
+    	}
+    	
+    	for (Course drawedcurr:drawedCourse) {
+    		// How to delete labels
+    		if (drawCourse.contains(drawedcurr)==false) {
+/*    			try {
+    				String drawedCode = drawedcurr.getTitle().split("\\ -")[0] + "\n" + drawedcurr.getSlot(0).getSectionCode();
+    				for (Label drawedcurrlabel:drawedLabel) {
+        				if(drawedcurrlabel.getText().contains(drawedcurr.getTitle().split("\\ -")[0]) || 
+        				   drawedcurrlabel.getText().contains(drawedcurr.getSlot(0).getSectionCode())) {
+        					ap.getChildren().remove(drawedcurrlabel);
+        				}
+        			}
+    			}
+    			catch (Exception e){
+    				System.out.println(e);
+    				System.out.println("The drawedCode is empty");
+    			}*/
+    			drawedCourse.remove(drawedcurr);
+    		}
+    	}
+    	
+    	//Test drawedCourse list
+    	System.out.println("");
+    	for (Course e: drawedCourse) {
+    		System.out.println(e.getTitle() + "is enrolled");
+    	}
+    	
+/*    	Label randomLabel = new Label("COMP1022\nL1");
     	Label randomLabel2 = new Label("COMP3711\nL3");
-    	Random r = new Random();
-    	double start = (r.nextInt(2) + 1) * 20 + 40;
+    	
     	
     	// Use random, Random r = new Random().nextInt(1) to Color.color(red, green, blue), to have different color everytime.
+    	randomLabel.setBackground(new Background(new BackgroundFill(Color.color(color3, color1, color2, 0.2), CornerRadii.EMPTY, Insets.EMPTY)));
+    	randomLabel.setLayoutX(500.0);
+    	randomLabel.setLayoutY(start + 20);
+    	randomLabel.setMinWidth(100.0);
+    	randomLabel.setMaxWidth(100.0);
+    	randomLabel.setMinHeight(60);
+    	randomLabel.setMaxHeight(60);
+    	randomLabel.setTextFill(Color.WHITE);
     	
-    	randomLabel2.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-
+    	// Use random, Random r = new Random().nextInt(1) to Color.color(red, green, blue), to have different color everytime.
+    	randomLabel2.setBackground(new Background(new BackgroundFill(Color.color(color1, color2, color3, 0.2), CornerRadii.EMPTY, Insets.EMPTY)));
     	randomLabel2.setLayoutX(500.0);
     	randomLabel2.setLayoutY(start + 40);
     	randomLabel2.setMinWidth(100.0);
     	randomLabel2.setMaxWidth(100.0);
     	randomLabel2.setMinHeight(60);
     	randomLabel2.setMaxHeight(60);
-//    	randomLabel2.setblendmode;
+    	randomLabel2.setTextFill(Color.WHITE);
+    	
+    	
 //    	String address = getParameter("adress");
-    	ap.getChildren().addAll(randomLabel2);
+    	ap.getChildren().addAll(randomLabel2,randomLabel);*/
+	
 	}
 	
 	
