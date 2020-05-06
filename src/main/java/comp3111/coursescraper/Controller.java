@@ -29,12 +29,13 @@ import javafx.scene.control.CheckBox;
 
 import java.util.Random;
 import java.util.List;
+import java.util.ArrayList;
 /**
  * @author jacky tam
  *
  */
 public class Controller {
-	private static List<Course> myCourseList;
+	private static List<Course> myCourseList = new ArrayList<Course>();
 	private static List<String> subject;
 	private List<Course> filterCourse;
 	
@@ -228,7 +229,7 @@ public class Controller {
 
     private Scraper scraper = new Scraper();
     
-    private static List<Course> myCourseList;
+//    private static List<Course> myCourseList;
     
     @FXML
     void allSubjectSearch() {
@@ -236,6 +237,7 @@ public class Controller {
 //    	System.out.println("Enter function");
     	
     	buttonSfqEnrollCourse.setDisable(false);
+    	resetCourseList();				// Reset static variable myCourseList
     	progressbar.setStyle("");		// Reset progress bar for new search
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
@@ -262,9 +264,17 @@ public class Controller {
     		    	
     		    	for (String subject : subjects) {
     		    		List<Course> v = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(), subject);
-    		    		myCourseList = v;
+    		    		
+    		    		// Debugging purpose
+//    		    		if (myCourseList.isEmpty()) 
+//    		    			System.out.println("Empty course list");
+//    		    		else 
+//    		    			System.out.println("Filled course list " + myCourseList.size());
+    		    		
+
     		    		String newline = "";
     		        	for (Course c : v) {
+    		        		myCourseList.add(c);
     		        		newline += "\n" + c.getTitle() + "\n";
     		        		for (int i = 0; i < c.getNumSlots(); i++) {
     		        			Slot t = c.getSlot(i);
@@ -277,6 +287,7 @@ public class Controller {
     		    		updateProgress(subjectCount+1, totalSubjectCount);
     		    		System.out.println("Subject " + subject + " is done.");
     		    	}
+		    		
     		    	// courseCount
     		    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + "Total Number of Courses fetched: " + Course.getAllCourse());
     		    	return null;
@@ -316,7 +327,7 @@ public class Controller {
 	@FXML
     void search() {
 		buttonSfqEnrollCourse.setDisable(false);
-		
+		resetCourseList();				// Reset static variable myCourseList 
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
 		Instructor.resetAllNameList();	// Reset instructor list for new search
@@ -332,8 +343,15 @@ public class Controller {
     		textAreaConsole.setText("Invalid URL: Page not found");
     	}
     	else {
-    		// Get search result statistics
     		myCourseList = v;
+    		
+    		// Debugging purpose
+//    		if (myCourseList.isEmpty()) 
+//    			System.out.println("Empty course list");
+//    		else 
+//    			System.out.println("Filled course list " + myCourseList.size());
+    		
+    		// Get search result statistics
     		String info1 = "Total number of different Sections in this search: " + Section.getNumSections() + "\n";
     		String info2 = "Total number of Courses in this search: " + Course.getNumCourse() + "\n";
     		String info3 = "Instructor who has teaching assignment this term but does not need to teach at Tu 3:10pm: \n";
@@ -343,7 +361,7 @@ public class Controller {
     		}
     		textAreaConsole.setText(info1 + info2 + info3);
     		
-        	for (Course c : v) {
+        	for (Course c : myCourseList) {
         		String newline = c.getTitle() + "\n";
 //        		System.out.println("Number slots" + c.getNumSlots());
         		for (int i = 0; i < c.getNumSlots(); i++) {
@@ -355,6 +373,9 @@ public class Controller {
     	}	
     }
 	
+	static void resetCourseList() {
+	    myCourseList = new ArrayList<Course>();
+	}
 
 
 }
