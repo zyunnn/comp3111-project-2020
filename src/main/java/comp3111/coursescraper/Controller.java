@@ -48,12 +48,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ArrayList;
 /**
  * @author jacky tam
  *
  */
-public class Controller  implements Initializable{
-	private static List<Course> myCourseList;
+public class Controller implements Initializable{
+	private static List<Course> myCourseList = new ArrayList<Course>();
+	private static List<String> subject;
 	private List<Course> filterCourse;
 	private List<Course> drawCourse = new ArrayList<Course>();
 	private List<String> EnrolledCourse = new ArrayList<String>();
@@ -419,6 +421,7 @@ public class Controller  implements Initializable{
     
     private Scraper scraper = new Scraper();
     
+
     
     @FXML
     void allSubjectSearch() {
@@ -426,6 +429,7 @@ public class Controller  implements Initializable{
 //    	System.out.println("Enter function");
     	
     	buttonSfqEnrollCourse.setDisable(false);
+    	resetCourseList();				// Reset static variable myCourseList
     	progressbar.setStyle("");		// Reset progress bar for new search
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
@@ -452,9 +456,17 @@ public class Controller  implements Initializable{
     		    	
     		    	for (String subject : subjects) {
     		    		List<Course> v = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(), subject);
-    		    		myCourseList = v;
+    		    		
+    		    		// Debugging purpose
+//    		    		if (myCourseList.isEmpty()) 
+//    		    			System.out.println("Empty course list");
+//    		    		else 
+//    		    			System.out.println("Filled course list " + myCourseList.size());
+    		    		
+
     		    		String newline = "";
     		        	for (Course c : v) {
+    		        		myCourseList.add(c);
     		        		newline += "\n" + c.getTitle() + "\n";
     		        		for (int i = 0; i < c.getNumSlots(); i++) {
     		        			Slot t = c.getSlot(i);
@@ -467,6 +479,7 @@ public class Controller  implements Initializable{
     		    		updateProgress(subjectCount+1, totalSubjectCount);
     		    		System.out.println("Subject " + subject + " is done.");
     		    	}
+		    		
     		    	// courseCount
     		    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + "Total Number of Courses fetched: " + Course.getAllCourse());
     		    	return null;
@@ -579,7 +592,7 @@ public class Controller  implements Initializable{
 	@FXML
     void search() {
 		buttonSfqEnrollCourse.setDisable(false);
-		
+		resetCourseList();				// Reset static variable myCourseList 
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
 		Instructor.resetAllNameList();	// Reset instructor list for new search
@@ -597,8 +610,15 @@ public class Controller  implements Initializable{
     	
     	// Scrape is successful and copy courses to myCourseList and display the output
     	else {
-    		// Get search result statistics
     		myCourseList = v;
+    		
+    		// Debugging purpose
+//    		if (myCourseList.isEmpty()) 
+//    			System.out.println("Empty course list");
+//    		else 
+//    			System.out.println("Filled course list " + myCourseList.size());
+    		
+    		// Get search result statistics
     		String info1 = "Total number of different Sections in this search: " + Section.getNumSections() + "\n";
     		String info2 = "Total number of Courses in this search: " + Course.getNumCourse() + "\n";
     		String info3 = "Instructor who has teaching assignment this term but does not need to teach at Tu 3:10pm: \n";
@@ -610,8 +630,8 @@ public class Controller  implements Initializable{
     		}
     		textAreaConsole.setText(info1 + info2 + info3);
     		
-    		// Print course info
-        	for (Course c : v) {
+        	for (Course c : myCourseList) {
+
         		String newline = c.getTitle() + "\n";
 //        		System.out.println("Number slots" + c.getNumSlots());
         		for (int i = 0; i < c.getNumSlots(); i++) {
@@ -628,6 +648,11 @@ public class Controller  implements Initializable{
     	}
     }
 	
+
+	static void resetCourseList() {
+	    myCourseList = new ArrayList<Course>();
+	}
+
 	
 	@FXML
 	void drawtable() {
