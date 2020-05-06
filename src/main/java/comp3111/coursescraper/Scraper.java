@@ -1,6 +1,8 @@
 package comp3111.coursescraper;
 
 import java.net.URLEncoder;
+
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
