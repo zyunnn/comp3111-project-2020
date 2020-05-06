@@ -59,6 +59,7 @@ public class Controller implements Initializable{
 	private List<Course> filterCourse;
 	private List<Course> drawCourse = new ArrayList<Course>();
 	private List<String> EnrolledCourse = new ArrayList<String>();
+	private String text_on_console;
 	
 	
     @FXML
@@ -225,18 +226,18 @@ public class Controller implements Initializable{
     		String enrolled_text = Cour_ID;
     		textAreaConsole.setText(textAreaConsole.getText() + "\n" + enrolled_text);
     	}
-		textAreaConsole.setText(textAreaConsole.getText() + "\n" + "\n" + "The list of courses after filter are:"+ "\n");
+		textAreaConsole.setText(textAreaConsole.getText() + "\n" + "\n" + "The list of courses after filter are:"+ "\n" + text_on_console);
 
     	
     	// print all the filter infomartion
-    	for (Course c:filterCourse) {
-    		String newline = c.getTitle() + "\n";
-    		for (int i = 0;i<c.getNumSlots();i++) {
-    			Slot curr_slot = c.getSlot(i);
-    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
-    		}
-    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
-    	}
+//    	for (Course c:filterCourse) {
+//    		String newline = c.getTitle() + "\n";
+//    		for (int i = 0;i<c.getNumSlots();i++) {
+//    			Slot curr_slot = c.getSlot(i);
+//    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
+//    		}
+//    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+//    	}
     }
 
     //After handlebox function
@@ -261,23 +262,23 @@ public class Controller implements Initializable{
     		if (CourseListTable.getItems().get(i).getEnroll().isSelected()) {
     			if(EnrolledCourse.contains(courseIDString) == false) {
     				EnrolledCourse.add(courseIDString);
-    				for (Course ftcurr : filterCourse) {
-    					String ftcurr_string = ftcurr.getTitle().split("\\ -")[0] + "--" + ftcurr.getSlot(i).getSectionCode();
-    					if (ftcurr_string == courseIDString) {
-    						drawCourse.add(ftcurr);
-    					}
-    				}
+//    				for (Course ftcurr : filterCourse) {
+//    					String ftcurr_string = ftcurr.getTitle().split("\\ -")[0] + "--" + ftcurr.getSlot(i).getSectionCode();
+//    					if (ftcurr_string == courseIDString) {
+//    						drawCourse.add(ftcurr);
+//    					}
+//    				}
     			}
     		}
     		else {
     			if(EnrolledCourse.contains(courseIDString) == true) {
     				EnrolledCourse.remove(courseIDString);
-    				for (Course ftcurr : filterCourse) {
-    					String ftcurr_string = ftcurr.getTitle().split("\\ -")[0] + "--" + ftcurr.getSlot(i).getSectionCode();
-    					if (ftcurr_string == courseIDString) {
-    						drawCourse.remove(ftcurr);
-    					}
-    				}
+//    				for (Course ftcurr : filterCourse) {
+//    					String ftcurr_string = ftcurr.getTitle().split("\\ -")[0] + "--" + ftcurr.getSlot(i).getSectionCode();
+//    					if (ftcurr_string == courseIDString) {
+//    						drawCourse.remove(ftcurr);
+//    					}
+//    				}
     			}
     		}
     	}   
@@ -401,7 +402,7 @@ public class Controller implements Initializable{
     	}else {
     		filterCourse = myCourseList;
     	}
-    	
+    	text_on_console = "";
     	// print text on console after filtering
     	for (Course c:filterCourse) {
     		String newline = c.getTitle() + "\n";
@@ -409,8 +410,13 @@ public class Controller implements Initializable{
     			Slot curr_slot = c.getSlot(i);
     			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
     		}
-    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+ 
+    		text_on_console += newline + "\n";
+//    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
     	} 	
+//    	textAreaConsole.setText("nth");
+//    	text_on_console = textAreaConsole.getText();
+   		textAreaConsole.setText( "\n" + text_on_console);
     	enrollmentUpdate();
     	updateList();
     	drawtable();
@@ -687,8 +693,8 @@ public class Controller implements Initializable{
     	randomLabel2.setMaxWidth(100.0);
     	randomLabel2.setMinHeight(60);
     	randomLabel2.setMaxHeight(60);
-    	randomLabel2.setblendmode;
-    	String address = getParameter("adress");
+//    	randomLabel2.setblendmode;
+//    	String address = getParameter("adress");
     	ap.getChildren().addAll(randomLabel2);
 	}
 	
