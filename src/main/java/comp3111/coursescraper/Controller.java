@@ -3,12 +3,12 @@ package comp3111.coursescraper;
 import java.awt.Checkbox;
 
 
+
 import java.awt.event.ActionEvent;
 import javafx.event.EventHandler;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -41,18 +41,18 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 
-// javafx scene effect for transparent table
-import javafx.scene.effect.Blend;   
-import javafx.scene.effect.BlendMode;
-
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+
 /**
  * @author jacky tam
  *
@@ -61,9 +61,11 @@ public class Controller  implements Initializable{
 	private static List<Course> myCourseList;
 	private List<Course> filterCourse;
 	private List<Course> drawCourse = new ArrayList<Course>();
-	private List<Course> drawedCourse = new ArrayList<Course>();
-	private List<Label> drawedLabel = new ArrayList<Label>();
 	private List<String> EnrolledCourse = new ArrayList<String>();
+	private List<Label> drawedLabel = new ArrayList<Label>();
+	private List<Course> drawedCourse = new ArrayList<Course>();
+	
+	private Map<String, Color> map = new HashMap<String, Color>();
 	
 	
     @FXML
@@ -266,23 +268,67 @@ public class Controller  implements Initializable{
     		if (CourseListTable.getItems().get(i).getEnroll().isSelected()) {
     			if(EnrolledCourse.contains(courseIDString) == false) {
     				EnrolledCourse.add(courseIDString);
-    				for (Course ftcurr : filterCourse) {
-    					String ftcurr_string = ftcurr.getTitle().split("\\ -")[0] + "--" + ftcurr.getSlot(i).getSectionCode();
-    					if (ftcurr_string == courseIDString) {
-    						drawCourse.add(ftcurr);
+    				
+    				System.out.println(courseIDString);
+    				for(Course curr : filterCourse) {
+    		    		String [] titleL = curr.getTitle().split("\\ -"); 
+    		    		for (int slotnum = 0; slotnum<curr.getNumSlots(); slotnum++) {
+    		    			String CourRefID = titleL[0] + "--" + curr.getSlot(slotnum).getSectionCode();
+    		    			//
+    		    			if (CourRefID.equals(courseIDString)) {
+    		    				boolean newCourse = true;
+    		    				for (Course dcurr:drawCourse) {
+        		    				// this course is already in drawCourse, probably because we select additional slot
+        		    				if (CourRefID.equals( (dcurr.getTitle().split("\\ -")[0] + "--" + curr.getSlot(slotnum).getSectionCode()))){
+        		    					newCourse = false;
+        		    					drawCourse.remove(dcurr);
+        		    					dcurr.setEnrollStatus(slotnum, true);
+        		    					drawCourse.add(dcurr);
+        		    					System.out.println("old course with new slot is added to drawCourse, which is " + CourRefID);
+        		    					System.out.println(dcurr.getSlot(slotnum).getDay());
+        		    					break;
+        		    				}
+    		    				}
+    		    				if (newCourse) {
+    		    					// this course is not in drawCourse
+        		    					curr.setEnrollStatus(slotnum, true);
+        		    					drawCourse.add(curr);
+        		    					System.out.println("new course added to drawCourse, which is " + CourRefID);
+        		    					System.out.println(curr.getSlot(slotnum).getDay());
+    		    				}
+        		    			
     					}
     				}
     			}
     		}
+    		}
     		else {
     			if(EnrolledCourse.contains(courseIDString) == true) {
     				EnrolledCourse.remove(courseIDString);
-    				for (Course ftcurr : filterCourse) {
-    					String ftcurr_string = ftcurr.getTitle().split("\\ -")[0] + "--" + ftcurr.getSlot(i).getSectionCode();
-    					if (ftcurr_string == courseIDString) {
-    						drawCourse.remove(ftcurr);
-    					}
-    				}
+    				System.out.println(courseIDString);   		
+    		    		for(Course dcurr:drawCourse) {
+    		    			String [] titleL = dcurr.getTitle().split("\\ -"); 
+    		    			for (int slotnum = 0; slotnum<dcurr.getNumSlots(); slotnum++) {
+        		    			String CourRefID = titleL[0] + "--" + dcurr.getSlot(slotnum).getSectionCode();
+        		    			//
+        		    			if (CourRefID.equals(courseIDString)) {
+//        		    				boolean newCourse = true;
+            		    				// this course is already in drawCourse, probably because we select additional slot
+
+//            		    				newCourse = false;
+            		    				dcurr.setEnrollStatus(slotnum, false);
+            		    				System.out.println("old course with new slot is removed from drawCourse, which is " + CourRefID + " " + dcurr.getSlot(slotnum).getDay());
+            		    				
+            		    				if (dcurr.getEnrolledNum() == 0) {
+            		    					drawCourse.remove(dcurr);
+            		    					System.out.println(dcurr.getTitle() + " is removed");
+            		    				}
+        		    				}
+    		    			}
+    		    			break;
+    		    		}
+    		    		
+
     			}
     		}
     	}   
@@ -304,7 +350,7 @@ public class Controller  implements Initializable{
     	for (Course curr : filterCourse) {
     		Set<String> checkedID = new HashSet<String>();
     		String [] titleL = curr.getTitle().split("\\ -"); 
-    		
+    	
     		for(int i=0;i<curr.getNumSlots();i++) {
     			Courselist currCour = new Courselist(titleL[0], curr.getSlot(i).getSectionCode(), titleL[1], curr.getSlot(i).getInstructor());
     			String CourRefID = titleL[0] + "--" + curr.getSlot(i).getSectionCode();
@@ -418,7 +464,7 @@ public class Controller  implements Initializable{
     	} 	
     	enrollmentUpdate();
     	updateList();
-//    	drawtable();
+    	drawtable();
     	
     	return;
     }
@@ -433,6 +479,7 @@ public class Controller  implements Initializable{
 //    	System.out.println("Enter function");
     	
     	buttonSfqEnrollCourse.setDisable(false);
+    	buttonInstructorSfq.setDisable(false);
     	progressbar.setStyle("");		// Reset progress bar for new search
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
@@ -501,7 +548,7 @@ public class Controller  implements Initializable{
     	
     	// To draw the timetable if the enrollment is not yet implemented
     	if (enrollbox.isEditable()==false) {
-//    		drawtable();
+    		drawtable();
     	}
     	}
 
@@ -548,6 +595,9 @@ public class Controller  implements Initializable{
 
 
 //    	*********************
+    	buttonInstructorSfq.setDisable(true);
+    	buttonSfqEnrollCourse.setDisable(true);
+    	
     	tblist.clear();
     	tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
 
@@ -574,19 +624,55 @@ public class Controller  implements Initializable{
     void findInstructorSfq() {
     	buttonInstructorSfq.setDisable(false);
     	
-    	textAreaConsole.setText("Let's get started!");
-    	System.out.println("Would this show up?");
+    	System.out.println("sorry, I am here");
+    	
+    	String display = "";
+    	
+    	String sfqurl = "file:///C:/Users/zhou%20zhuo%20rui/git/comp3111-project-2020/src/main/resources/sfq.html";
+    	
+    	Hashtable<String,Float> sfqins = scraper.sfqins(sfqurl);
+    	
+    	System.out.println(sfqins);
+    	
+    	for(String key : sfqins.keySet()) {
+    		if (key.equals("") || key.equals(" ")) continue;
+    		else	display = display + "Instructor" + key + " SFQ score : "+ (Float.toString(sfqins.get(key))) + "\n";
+    	}
+    	
+    	
+    	textAreaConsole.setText(display);
     }
 
     @FXML
     void findSfqEnrollCourse() {
-    	// Just for testing, to run drawtable more quickly
-//    	drawtable();
+    	buttonSfqEnrollCourse.setDisable(false);
+    	
+    	System.out.println("sorry, I am here");
+    	
+    	String display = "";
+    	
+    	String sfqurl = "file:///C:/Users/zhou%20zhuo%20rui/git/comp3111-project-2020/src/main/resources/sfq.html";
+    	
+    	Hashtable<String,Float> sfqcourse = scraper.sfqcourse(sfqurl);
+    	
+    	System.out.println(sfqcourse);
+    	
+    	for (String coursetitle:EnrolledCourse) {
+    		String coursecode = coursetitle.split("--")[0];
+    		System.out.println(coursecode);
+    		if (sfqcourse.keySet().contains(coursecode))
+    		display = display + "Course " +coursecode + " SFQ score : "+ (Float.toString(sfqcourse.get(coursecode))) + "\n";
+    		else display = display + "Course " + coursecode + " SFQ score : Not founded on the webpage" + "\n";
+    	}
+    	
+    	textAreaConsole.setText(display);
+    	
     }
 
 	@FXML
     void search() {
 		buttonSfqEnrollCourse.setDisable(false);
+		buttonInstructorSfq.setDisable(false);
 		
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
@@ -632,14 +718,14 @@ public class Controller  implements Initializable{
     	
     	// To draw the timetable if the enrollment is not yet implemented
     	if (enrollbox.isEditable()==false) {
-//    		drawtable();
+    		drawtable();
     	}
     }
 	
 	
 	@FXML
 	void drawtable() {
-		System.out.println("Can you see me ?");
+//		System.out.println("Can you see me ?");
 		if (enrollbox.isEditable()==false) {
 			drawCourse.clear();
 			if (myCourseList.size()<5) {
@@ -659,23 +745,42 @@ public class Controller  implements Initializable{
     	//Add a random block on Saturday
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
     	
+    	for(Label l:drawedLabel) {
+    		ap.getChildren().remove(l);
+    	}
+    	
     	for (Course drawcurr:drawCourse) {
-    		if (drawedCourse.contains(drawcurr)){
-    			continue;
-    		}
-    		
-    		
-    		Random r = new Random();
-//        	double start = (r.nextInt(10) + 1) * 20 + 40;
-        	double color1 = r.nextDouble();
-        	double color2 = r.nextDouble();
-        	double color3 = r.nextDouble();
-        	Color currColor = Color.color(color1, color2, color3, 0.3);
-    		
-        	// Pause the drawing to test
-/*    		for (int i = 0; i<drawcurr.getNumSlots(); i++) {
+//			if (drawedCourse.contains(drawcurr)) {
+//				continue;
+	//		}
+    		for (int slotnum = 0; slotnum<drawcurr.getNumSlots(); slotnum++) {
+    			if (drawcurr.getEnrollStatus(slotnum)==false) {
+    				continue;
+    			}
     			
-    			Slot drawcurrSlot = drawcurr.getSlot(i);
+    			// I suppose if enrollnum change in a course, it differs
+//    			boolean sameslots = false;
+//    			for (Course drawedcurr:drawedCourse) {
+ //  				if (drawedcurr.getTitle().equals(drawcurr.getTitle())&& drawedcurr.getSlot(slotnum).getSectionCode().equals(drawcurr.getSlot(slotnum).getSectionCode())) {
+    //					continue;
+    //				}
+    //			}
+
+        		String [] titleL = drawcurr.getTitle().split("\\ -");
+    			String CourRefID = titleL[0] + "--" + drawcurr.getSlot(slotnum).getSectionCode();
+    			
+    			if (map.containsKey(CourRefID)==false) {
+    	    		Random r = new Random();
+//    	        	double start = (r.nextInt(10) + 1) * 20 + 40;
+    	        	double color1 = r.nextDouble();
+    	        	double color2 = r.nextDouble();
+    	        	double color3 = r.nextDouble();
+    	        	Color drawcurrColor = Color.color(color1, color2, color3, 0.3);
+    	        	map.put(CourRefID, drawcurrColor);
+    			}
+
+    			
+    			Slot drawcurrSlot = drawcurr.getSlot(slotnum);
     			int drawDay = drawcurrSlot.getDay();
     			int drawStartHour = drawcurrSlot.getStartHour();
     			int drawEndHour = drawcurrSlot.getEndHour();
@@ -683,19 +788,19 @@ public class Controller  implements Initializable{
     			int drawEndMin = drawcurrSlot.getEndMinute();
     			
     			double drawXlayout = (drawDay + 1) * 100;
-    			double drawYlayout = (drawStartHour - 8) * 20 + (drawStartMin) /3;
+    			double drawYlayout = (drawStartHour - 7) * 20 + (drawStartMin) /3;
     			
     			double drawWidth = 100;
-    			double drawHeight = (drawEndHour - drawStartHour) * 20 + (drawEndMin - drawStartMin) / 3;
+    			double drawHeight = (drawEndHour - drawStartHour) * 20 + (drawEndMin - drawStartMin + 10) / 3;
     			
-    			String drawCode = drawcurr.getTitle().split("\\ -")[0] + "\n" + drawcurr.getSlot(i).getSectionCode();
+    			String drawCode = drawcurr.getTitle().split("\\ -")[0] + "\n" + drawcurr.getSlot(slotnum).getSectionCode();
     			
-    			if (drawHeight < 20) {
-    				drawCode = drawcurr.getTitle().split("\\ -")[0] + " " + drawcurr.getSlot(i).getSectionCode();
+    			if (drawHeight < 30) {
+    				drawCode = drawcurr.getTitle().split("\\ -")[0] + " " + drawcurr.getSlot(slotnum).getSectionCode();
     			}
     			
     			Label drawLabel = new Label(drawCode);
-    			drawLabel.setBackground(new Background(new BackgroundFill(currColor, CornerRadii.EMPTY, Insets.EMPTY)));
+    			drawLabel.setBackground(new Background(new BackgroundFill(map.get(CourRefID), CornerRadii.EMPTY, Insets.EMPTY)));
     			drawLabel.setLayoutX(drawXlayout);
     			drawLabel.setLayoutY(drawYlayout);
     			drawLabel.setMinHeight(drawHeight);
@@ -706,13 +811,13 @@ public class Controller  implements Initializable{
     			ap.getChildren().add(drawLabel);
     			drawedLabel.add(drawLabel);
     		}
-    		*/
-    		drawedCourse.add(drawcurr);
-    	}
+		}
+//    		drawedCourse.add(drawcurr);
+
     	
-    	for (Course drawedcurr:drawedCourse) {
+//    	for (Course drawedcurr:drawedCourse) {
     		// How to delete labels
-    		if (drawCourse.contains(drawedcurr)==false) {
+//    		if (drawCourse.contains(drawedcurr)==false) {
 /*    			try {
     				String drawedCode = drawedcurr.getTitle().split("\\ -")[0] + "\n" + drawedcurr.getSlot(0).getSectionCode();
     				for (Label drawedcurrlabel:drawedLabel) {
@@ -725,45 +830,16 @@ public class Controller  implements Initializable{
     			catch (Exception e){
     				System.out.println(e);
     				System.out.println("The drawedCode is empty");
-    			}*/
-    			drawedCourse.remove(drawedcurr);
-    		}
-    	}
+    			} */
+//   			drawedCourse.remove(drawedcurr);
+//    		}
+//    	}
     	
     	//Test drawedCourse list
-    	System.out.println("");
-    	for (Course e: drawedCourse) {
-    		System.out.println(e.getTitle() + "is enrolled");
-    	}
-    	
-/*    	Label randomLabel = new Label("COMP1022\nL1");
-    	Label randomLabel2 = new Label("COMP3711\nL3");
-    	
-    	
-    	// Use random, Random r = new Random().nextInt(1) to Color.color(red, green, blue), to have different color everytime.
-    	randomLabel.setBackground(new Background(new BackgroundFill(Color.color(color3, color1, color2, 0.2), CornerRadii.EMPTY, Insets.EMPTY)));
-    	randomLabel.setLayoutX(500.0);
-    	randomLabel.setLayoutY(start + 20);
-    	randomLabel.setMinWidth(100.0);
-    	randomLabel.setMaxWidth(100.0);
-    	randomLabel.setMinHeight(60);
-    	randomLabel.setMaxHeight(60);
-    	randomLabel.setTextFill(Color.WHITE);
-    	
-    	// Use random, Random r = new Random().nextInt(1) to Color.color(red, green, blue), to have different color everytime.
-    	randomLabel2.setBackground(new Background(new BackgroundFill(Color.color(color1, color2, color3, 0.2), CornerRadii.EMPTY, Insets.EMPTY)));
-    	randomLabel2.setLayoutX(500.0);
-    	randomLabel2.setLayoutY(start + 40);
-    	randomLabel2.setMinWidth(100.0);
-    	randomLabel2.setMaxWidth(100.0);
-    	randomLabel2.setMinHeight(60);
-    	randomLabel2.setMaxHeight(60);
-    	randomLabel2.setTextFill(Color.WHITE);
-    	
-    	
-//    	String address = getParameter("adress");
-    	ap.getChildren().addAll(randomLabel2,randomLabel);*/
-	
+//    	System.out.println("");
+//    	for (Course e: drawedCourse) {
+//    		System.out.println(e.getTitle() + "is enrolled");
+//    	}
 	}
 	
 	
