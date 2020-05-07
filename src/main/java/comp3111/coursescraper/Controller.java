@@ -338,7 +338,10 @@ public class Controller implements Initializable{
     	}   
     }
     
-    
+	/**
+	 * A function to update the courses shown in the list table based on the filtered and enrolled courses
+	 * @return Nothing
+	 * */
     private void updateList() {
     	this.tblist.clear();
 
@@ -384,6 +387,11 @@ public class Controller implements Initializable{
     	
     }
     
+	/**
+	 * A function initiated when any of the check-box is selected or de-selected.
+	 * And it will print out all the filtered courses in the textAreaConsole
+	 * @return Nothing
+	 * */
     @FXML
     private void handleBox() {
     	textAreaConsole.clear();
