@@ -15,6 +15,9 @@ import org.testfx.framework.junit.ApplicationTest;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -60,7 +63,7 @@ public class FxTest extends ApplicationTest {
 		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertTrue(!b.isDisabled());
 		clickOn("#buttonDisplay");
-		sleep(100000);
+		sleep(30000);
 		
 		clickOn("#tabFilter");
 		sleep(5000);
@@ -68,5 +71,31 @@ public class FxTest extends ApplicationTest {
 		sleep(5000);
 		clickOn("#tabStatistic");
 		sleep(1000);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void testfilter() {
+		sleep(500);
+		clickOn("#tabMain");
+		clickOn("#buttonSearch");
+		sleep(500);
+		clickOn("#tabFilter");
+		clickOn("#SelectALL");
+		sleep(500);
+		clickOn("#SelectALL");
+		sleep(500);
+		clickOn("#AmBox");
+		CheckBox am = (CheckBox)s.lookup("#AmBox");
+		sleep(100);
+		assertTrue(am.isSelected());
+		clickOn("#PmBox");
+		CheckBox pm = (CheckBox)s.lookup("#PmBox");
+		sleep(100);
+		assertTrue(pm.isSelected());
+		sleep(500);
+		clickOn("#tabList");
+
+		
 	}
 }
