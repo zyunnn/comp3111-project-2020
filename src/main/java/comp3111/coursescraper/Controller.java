@@ -51,14 +51,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * @author jacky tam
  *
  */
-public class Controller  implements Initializable{
-	private static List<Course> myCourseList;
+public class Controller implements Initializable{
+	private static List<Course> myCourseList = new ArrayList<Course>();
+	private static List<String> subject;
 	private List<Course> filterCourse;
 	private List<Course> drawCourse = new ArrayList<Course>();
 	private List<String> EnrolledCourse = new ArrayList<String>();
@@ -66,6 +69,7 @@ public class Controller  implements Initializable{
 	private List<Course> drawedCourse = new ArrayList<Course>();
 	
 	private Map<String, Color> map = new HashMap<String, Color>();
+	private String text_on_console;
 	
 	
     @FXML
@@ -232,18 +236,18 @@ public class Controller  implements Initializable{
     		String enrolled_text = Cour_ID;
     		textAreaConsole.setText(textAreaConsole.getText() + "\n" + enrolled_text);
     	}
-		textAreaConsole.setText(textAreaConsole.getText() + "\n" + "\n" + "The list of courses after filter are:"+ "\n");
+		textAreaConsole.setText(textAreaConsole.getText() + "\n" + "\n" + "The list of courses after filter are:"+ "\n" + text_on_console);
 
     	
     	// print all the filter infomartion
-    	for (Course c:filterCourse) {
-    		String newline = c.getTitle() + "\n";
-    		for (int i = 0;i<c.getNumSlots();i++) {
-    			Slot curr_slot = c.getSlot(i);
-    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
-    		}
-    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
-    	}
+//    	for (Course c:filterCourse) {
+//    		String newline = c.getTitle() + "\n";
+//    		for (int i = 0;i<c.getNumSlots();i++) {
+//    			Slot curr_slot = c.getSlot(i);
+//    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
+//    		}
+//    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+//    	}
     }
 
     //After handlebox function
@@ -267,8 +271,7 @@ public class Controller  implements Initializable{
     		String courseIDString = CourseListTable.getItems().get(i).getCourseCode() + "--" + CourseListTable.getItems().get(i).getSection();
     		if (CourseListTable.getItems().get(i).getEnroll().isSelected()) {
     			if(EnrolledCourse.contains(courseIDString) == false) {
-    				EnrolledCourse.add(courseIDString);
-    				
+    				EnrolledCourse.add(courseIDString);	
     				System.out.println(courseIDString);
     				for(Course curr : filterCourse) {
     		    		String [] titleL = curr.getTitle().split("\\ -"); 
@@ -299,6 +302,7 @@ public class Controller  implements Initializable{
         		    			
     					}
     				}
+
     			}
     		}
     		}
@@ -328,6 +332,7 @@ public class Controller  implements Initializable{
     		    			break;
     		    		}
     		    		
+
 
     			}
     		}
@@ -452,7 +457,7 @@ public class Controller  implements Initializable{
     	}else {
     		filterCourse = myCourseList;
     	}
-    	
+    	text_on_console = "";
     	// print text on console after filtering
     	for (Course c:filterCourse) {
     		String newline = c.getTitle() + "\n";
@@ -460,8 +465,13 @@ public class Controller  implements Initializable{
     			Slot curr_slot = c.getSlot(i);
     			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
     		}
-    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+ 
+    		text_on_console += newline + "\n";
+//    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
     	} 	
+//    	textAreaConsole.setText("nth");
+//    	text_on_console = textAreaConsole.getText();
+   		textAreaConsole.setText( "\n" + text_on_console);
     	enrollmentUpdate();
     	updateList();
     	drawtable();
@@ -472,6 +482,7 @@ public class Controller  implements Initializable{
     
     private Scraper scraper = new Scraper();
     
+
     
     @FXML
     void allSubjectSearch() {
@@ -480,6 +491,7 @@ public class Controller  implements Initializable{
     	
     	buttonSfqEnrollCourse.setDisable(false);
     	buttonInstructorSfq.setDisable(false);
+    	resetCourseList();				// Reset static variable myCourseList
     	progressbar.setStyle("");		// Reset progress bar for new search
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
@@ -506,9 +518,17 @@ public class Controller  implements Initializable{
     		    	
     		    	for (String subject : subjects) {
     		    		List<Course> v = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(), subject);
-    		    		myCourseList = v;
+    		    		
+    		    		// Debugging purpose
+//    		    		if (myCourseList.isEmpty()) 
+//    		    			System.out.println("Empty course list");
+//    		    		else 
+//    		    			System.out.println("Filled course list " + myCourseList.size());
+    		    		
+
     		    		String newline = "";
     		        	for (Course c : v) {
+    		        		myCourseList.add(c);
     		        		newline += "\n" + c.getTitle() + "\n";
     		        		for (int i = 0; i < c.getNumSlots(); i++) {
     		        			Slot t = c.getSlot(i);
@@ -521,6 +541,7 @@ public class Controller  implements Initializable{
     		    		updateProgress(subjectCount+1, totalSubjectCount);
     		    		System.out.println("Subject " + subject + " is done.");
     		    	}
+		    		
     		    	// courseCount
     		    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + "Total Number of Courses fetched: " + Course.getAllCourse());
     		    	return null;
@@ -673,7 +694,7 @@ public class Controller  implements Initializable{
     void search() {
 		buttonSfqEnrollCourse.setDisable(false);
 		buttonInstructorSfq.setDisable(false);
-		
+		resetCourseList();				// Reset static variable myCourseList 
 		Course.resetNumCourse();		// Reset number of courses for new search
 		Section.resetNumSections();		// Reset number of unique sections for new search
 		Instructor.resetAllNameList();	// Reset instructor list for new search
@@ -691,8 +712,15 @@ public class Controller  implements Initializable{
     	
     	// Scrape is successful and copy courses to myCourseList and display the output
     	else {
-    		// Get search result statistics
     		myCourseList = v;
+    		
+    		// Debugging purpose
+//    		if (myCourseList.isEmpty()) 
+//    			System.out.println("Empty course list");
+//    		else 
+//    			System.out.println("Filled course list " + myCourseList.size());
+    		
+    		// Get search result statistics
     		String info1 = "Total number of different Sections in this search: " + Section.getNumSections() + "\n";
     		String info2 = "Total number of Courses in this search: " + Course.getNumCourse() + "\n";
     		String info3 = "Instructor who has teaching assignment this term but does not need to teach at Tu 3:10pm: \n";
@@ -704,8 +732,8 @@ public class Controller  implements Initializable{
     		}
     		textAreaConsole.setText(info1 + info2 + info3);
     		
-    		// Print course info
-        	for (Course c : v) {
+        	for (Course c : myCourseList) {
+
         		String newline = c.getTitle() + "\n";
 //        		System.out.println("Number slots" + c.getNumSlots());
         		for (int i = 0; i < c.getNumSlots(); i++) {
@@ -722,6 +750,11 @@ public class Controller  implements Initializable{
     	}
     }
 	
+
+	static void resetCourseList() {
+	    myCourseList = new ArrayList<Course>();
+	}
+
 	
 	@FXML
 	void drawtable() {
@@ -744,7 +777,7 @@ public class Controller  implements Initializable{
 		//Transparency issue done
     	//Add a random block on Saturday
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
-    	
+    
     	for(Label l:drawedLabel) {
     		ap.getChildren().remove(l);
     	}
@@ -840,6 +873,7 @@ public class Controller  implements Initializable{
 //    	for (Course e: drawedCourse) {
 //    		System.out.println(e.getTitle() + "is enrolled");
 //    	}
+
 	}
 	
 	
