@@ -12,26 +12,46 @@ import java.util.Vector;
 
 import javafx.scene.control.CheckBox;
 
+
+/**
+* A class to filter the course based on certain criteria
+* @version 1.0
+* @author Tam Wui Wo
+* @
+*/
 public class Filter {
 
-//	private String [] filterlist;	
-	// identify the needs
+
 	/*
 	 *  CBList[0] = AmBox;
-    	CBList[1] = PmBox;
-    	CBList[2] = MondayBox;
-    	CBList[3] = TuesdayBox;
-    	CBList[4] = WednesdayBox;
-    	CBList[5] = ThursdayBox;
-    	CBList[6] = FridayBox;
-    	CBList[7] = SaturdayBox;
-    	CBList[8] = CCBox;
-    	CBList[9] = NExclBox;
-    	CBList[10] = LabBox;
+     *  CBList[1] = PmBox;
+     *  CBList[2] = MondayBox;
+     *  CBList[3] = TuesdayBox;
+     *  CBList[4] = WednesdayBox;
+     *  CBList[5] = ThursdayBox;
+     *  CBList[6] = FridayBox;
+     *  CBList[7] = SaturdayBox;
+     *  CBList[8] = CCBox;
+     *  CBList[9] = NExclBox;
+     *  CBList[10] = LabBox;
 	 * */
+	
+	/**
+	 * A function to filter the course based on the buttons status in the filter tab
+	 * @return List<Course> list of filtered course
+	 * @param CBList list of boolean flag indicate the checkbox is clicked or not
+	 * @param input list of course scraped 
+	 */
 	public List<Course> call_filter (Boolean [] CBList, List<Course> input) {		
-		/* to indicate whether we need the section information about AM or PM of the classes or not
-		 * indicate by time flag
+       	/*
+       	 * temp: a list of course type to store the input course list
+       	 * cour_re: a list of course type to store the return course list
+       	 * */
+    	List<Course> temp = input;
+    	List<Course> cour_re = new ArrayList<Course>();
+		
+		/*
+		 * time flag: To indicate whether we need the section information about AM or PM of the classes or not
 		 * 0 means NO
 		 * 1 means YES
 		 * 
@@ -55,11 +75,21 @@ public class Filter {
     		time_flag = 4;
     	}
     	
+    	
+    	/*
+    	 * date_flag: a flag indicate whether any of the day checkbox is selected or not
+    	 * 0 means NO
+		 * 1 means YES
+		 * 
+		 * transform the boolean flag into integer flags indicate the selected day box
+		 * day_ff[] array of integer flag, with initial value of 0 for the boxes
+		 * if the a certain day is selected, CBList[i] is true, then store the integer flag in day_ff[]
+		 * with values not equal to 0
+    	 * */
     	int date_flag = 0;
 		int[] day_ff = new int[6];
 		Arrays.fill(day_ff, 0);
     	
-		//
     	if (CBList[2]==true) {
     		day_ff[0] = 11;
     		date_flag =1;    	
@@ -97,27 +127,37 @@ public class Filter {
     	int ex_flag = 0;
     	int lab_flag = 0;
     	
-    	if (CBList[8]==true) { cc_flag = 1;}
-    	
-       	if (CBList[9]==true) { ex_flag = 1;}
-       	
+    	if (CBList[8]==true) { cc_flag = 1;}    	
+       	if (CBList[9]==true) { ex_flag = 1;}  	
        	if (CBList[10]==true){ lab_flag = 1;}
-  	
-    	List<Course> temp = input;
-    	List<Course> cour_re = new ArrayList<Course>();
-    	
+    	   	
+       	/*
+       	 * a for loop to loop through all the courses and slots from input
+       	 * if any slots fulfill the selected filter requirements, create a new course object
+       	 * to store the selected courses with slots fulfill the filters.
+       	 * */
     	for (Course curr_input:temp) {
-//			System.out.println(curr_input.getTitle() + " " + curr_input.getNumSlots());
-//			System.out.println(curr_input.getDescription());
-//			System.out.println(curr_input.getExclusion());
-//			System.out.println("********************");
-
+    		/*
+    		 * if the current course with 0 slots, skip the current iteration
+    		 * */
     		if(curr_input.getNumSlots() == 0) {
     			continue;
     		}
+    		
+    		/*
+    		 * section_flag: store all the section code fulfill the filters
+    		 * to_add: a new object of course type to store the current course information
+    		 * */
 			Set<String> section_flag = new HashSet<String>();
 			Course to_add = curr_input.clone();
 			
+			/*
+			 * time_flag > 0 means either AM or PM or both is selected
+			 * Call filtertime(curr_input, time_ff) to return all the section code fulfill the
+			 * days selected, store the result in time_temp
+			 * 
+			 * Then store the time_temp results into the section_flag list for return
+			 * */
 			if (time_flag >0) {
 				Set<String> time_temp = filtertime(curr_input, time_ff);
 				if (time_temp.isEmpty()) {
@@ -126,6 +166,14 @@ public class Filter {
 				section_flag.addAll(time_temp);
 			}
 			
+			/*
+			 * time_flag > 0 means there is at least one checkbox for day is selected
+			 * Call filtertime(curr_input, day_ff) to return all the section code fulfill the
+			 * days selected, store the result in date_temp
+			 * 
+			 * If date_temp not empty, carry out AND logic with the current result in section_flag list 
+			 * for return
+			 * */
 			if(date_flag >0) {
 				Set<String> date_temp = filterday(curr_input, day_ff);
 				if (date_temp.isEmpty()) {
@@ -138,6 +186,7 @@ public class Filter {
 				}
 			}
         	
+			
            boolean flag_add = true;
            boolean flag_add_cc = true;
            boolean flag_add_ex = true;
@@ -202,7 +251,11 @@ public class Filter {
     	return cour_re;
 	}
 	
-	
+	/**
+	 * A function to check if the current course contain any laboratory or tutorial sections
+	 * @param in an object of class course
+	 * @return boolean a boolean value indicate the existence of section code starts with "LA" or "T"
+	 * */
 	public boolean checklab(Course in) {
 		
 		for (int i = 0; i<in.getNumSlots();i++) {
@@ -214,8 +267,13 @@ public class Filter {
 	}
 	
 	
+	/**
+	 * A function to check if the current course fulfill the AM or/and PM filters
+	 * @param input_c an object of class course
+	 * @param arr an array contained the flags indicate if AM or PM box is either or both selected
+	 * @return Set<String> a set of string contained all the section code of the input course fulfill the filters
+	 * */
 	public Set<String> filtertime(Course input_c, boolean [] arr) {
-//		System.out.println("captured by filter time");
 		boolean AMM = arr[0];
 		boolean PMM = arr[1];
 
@@ -223,7 +281,6 @@ public class Filter {
 		Set<String> section_AMPM = new HashSet<String>();
 		Set<String> section_AM = new HashSet<String>();
 		Set<String> section_PM = new HashSet<String>();
-//		System.out.println(input_c.getTitle());
 		
 			// get the related section code
 		for (int j = 0; j < input_c.getNumSlots();j++) {
@@ -247,22 +304,21 @@ public class Filter {
 			intersection.retainAll(section_PM);
 			section_flag.addAll(section_AMPM);
 			section_flag.addAll(intersection);
-//			System.out.println("1");
 		}else if ((AMM == true) && (PMM == false)){
 			section_flag.addAll(section_AM);
-//			System.out.println("2");
-//			if(section_flag.isEmpty()) {
-////				System.out.println("error");
-//			}
-
 		}else if ((AMM == false) && (PMM == true)) {
 			section_flag.addAll(section_PM);
 		}
 		return section_flag;
 	}
 	
+	/**
+	 * A function to check if the current course fulfill the day filters
+	 * @param input_c an object of class course
+	 * @param arr an array contained the flags indicate if any of the day checkbox selected
+	 * @return Set<String> a set of string contained all the section code of the input course fulfill the filters
+	 * */
 	public Set<String> filterday(Course input_c, int [] arr) {
-//		System.out.println("captured3");
 		int flag_Mon  = arr[0];
 		int flag_Tue  = arr[1];
 		int flag_Wed  = arr[2]; 
@@ -278,7 +334,6 @@ public class Filter {
 		Set<String> section_Thur = new HashSet<String>();
 		Set<String> section_Fri  = new HashSet<String>();
 		Set<String> section_Sat  = new HashSet<String>();
-
 		// get the related section code
 		for (int j = 0; j < input_c.getNumSlots();j++) {
 			Slot curr_slot = input_c.getSlot(j);			
@@ -305,9 +360,7 @@ public class Filter {
 			if (curr_slot.getDay() == 5) {
 				section_Sat.add(curr_slot.getSectionCode());
 			}
-
 		}
-		
 		
 		// finalize the section_flag by implementing the AND Logic
 		if (flag_Mon>0) {
@@ -323,12 +376,12 @@ public class Filter {
 			}
 			if (section_flag.isEmpty()) {
 				section_flag.addAll(section_Tue);
-//				System.out.println("em tue");
-
 			}else {
 				section_flag.retainAll(section_Tue);
-//				System.out.println("pre tue");
-
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}
 			
@@ -340,9 +393,11 @@ public class Filter {
 				section_flag.addAll(section_Wed);
 			}else {
 				section_flag.retainAll(section_Wed);
-//				System.out.println("captured3222222222");
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
-			
 		}
 		
 		if (flag_Thur >0) {
@@ -353,6 +408,10 @@ public class Filter {
 				section_flag.addAll(section_Thur);
 			}else {
 				section_flag.retainAll(section_Thur);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}
 			
@@ -364,6 +423,10 @@ public class Filter {
 				section_flag.addAll(section_Fri);
 			}else {
 				section_flag.retainAll(section_Fri);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}
 		
@@ -375,15 +438,20 @@ public class Filter {
 				section_flag.addAll(section_Sat);
 			}else {
 				section_flag.retainAll(section_Sat);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}		
-
-//		System.out.println(input_c.getTitle() + "    has    " + section_flag);
-
-
 		return section_flag;
 	}
 	
+	/**
+	 * A function to return all the section code of the course
+	 * @return Set<String> a set of string contains all the section code of the input course c 
+	 * @param c a object of course type to select all the section codes
+	 * */
 	public Set<String> allsection (Course c){
 		Set<String> ans = new HashSet<String>();
 		for (int i = 0;i<c.getNumSlots();i++) {
@@ -394,5 +462,6 @@ public class Filter {
 
 	// end of the class
 };	
+
 
 

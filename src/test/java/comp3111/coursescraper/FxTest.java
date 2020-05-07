@@ -14,6 +14,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
@@ -35,13 +36,36 @@ public class FxTest extends ApplicationTest {
    		s = scene;
 	}
 
+	@Test
+	public void testInvalidURL() {
+		clickOn("#tabMain");
+		clickOn("#textfieldURL");
+		type(KeyCode.DELETE, 3);
+		clickOn("#buttonSearch");
+		sleep(3000);
+	}
 	
 	@Test
-	public void testButton() {
-		clickOn("#tabSfq");
-		clickOn("#buttonInstructorSfq");
-		Button b = (Button)s.lookup("#buttonInstructorSfq");
+	public void testSearch() {
+		clickOn("#tabMain");
+		clickOn("#buttonSearch");
+		sleep(5000);
+	}
+	
+	@Test
+	public void testAllSubjectSearch() {
+		clickOn("#tabAllSubject");
+		clickOn("#buttonAllSubjectSearch");
+		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
+		assertTrue(!b.isDisabled());
+		clickOn("#buttonDisplay");
+		sleep(100000);
+		
+		clickOn("#tabFilter");
+		sleep(5000);
+		clickOn("#tabList");
+		sleep(5000);
+		clickOn("#tabStatistic");
 		sleep(1000);
-		assertTrue(b.isDisabled());
 	}
 }
