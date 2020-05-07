@@ -334,7 +334,6 @@ public class Filter {
 		Set<String> section_Thur = new HashSet<String>();
 		Set<String> section_Fri  = new HashSet<String>();
 		Set<String> section_Sat  = new HashSet<String>();
-
 		// get the related section code
 		for (int j = 0; j < input_c.getNumSlots();j++) {
 			Slot curr_slot = input_c.getSlot(j);			
@@ -379,6 +378,10 @@ public class Filter {
 				section_flag.addAll(section_Tue);
 			}else {
 				section_flag.retainAll(section_Tue);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}
 			
@@ -390,6 +393,10 @@ public class Filter {
 				section_flag.addAll(section_Wed);
 			}else {
 				section_flag.retainAll(section_Wed);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}
 		
@@ -401,6 +408,10 @@ public class Filter {
 				section_flag.addAll(section_Thur);
 			}else {
 				section_flag.retainAll(section_Thur);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}
 			
@@ -412,6 +423,10 @@ public class Filter {
 				section_flag.addAll(section_Fri);
 			}else {
 				section_flag.retainAll(section_Fri);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}
 		
@@ -423,6 +438,10 @@ public class Filter {
 				section_flag.addAll(section_Sat);
 			}else {
 				section_flag.retainAll(section_Sat);
+				// if the intersect set gives empty means there is not intersection, return it
+				if (section_flag.isEmpty()) {
+					return new HashSet<String>();
+				}
 			}
 		}		
 		return section_flag;
