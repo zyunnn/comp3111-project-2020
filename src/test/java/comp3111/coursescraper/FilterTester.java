@@ -10,7 +10,8 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 public class FilterTester {
 	Filter fill = new Filter();
@@ -40,7 +41,7 @@ public class FilterTester {
 	Course test_course_2 = new Course();
 	String title_2 = "math3999";
 	String desc_2 = "this is two course";
-	String excl_2 = "";
+	String excl_2 = null;
 	
 	Slot teSlot_3 = new Slot();
 	String startT_3 = "05:00PM";
@@ -48,7 +49,7 @@ public class FilterTester {
 	String venueT_3 = "USA";
 	String instructor_3 = "Donald Trump";
 	String sc_3 = "LA1";
-	int dayy_3 = 1;
+	int dayy_3 = 0;
 	
 	Slot teSlot_4 = new Slot();
 	String startT_4 = "06:00AM";
@@ -56,8 +57,8 @@ public class FilterTester {
 	String venueT_4 = "USA";
 	String instructor_4 = "Donald Trump";
 	String sc_4 = "T1";
-	int dayy_4 = 2;
-	boolean [] CBList = new boolean[11];
+	int dayy_4 = 3;
+	Boolean [] CBList = new Boolean[11];
 
 	
 	@Before
@@ -110,6 +111,63 @@ public class FilterTester {
 		
 		input.add(test_course);
 		input.add(test_course_2);
+	}
+	
+	@Test
+	public void testfiltermain() {
+		Arrays.fill(CBList, Boolean.FALSE);
+		assertEquals(fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode(), teSlot_1.getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[1] = true;
+		CBList[0] = true;
+		assertEquals(fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode(), teSlot_2.getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[0] = true;
+		assertEquals(fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode(), teSlot_2.getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[1] = true;
+		assertEquals(fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode(), teSlot_1.getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[8] = true;
+		assertEquals(fill.call_filter(CBList, input).get(0).getTitle(), test_course.getTitle());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[8] = true;
+		List<Course> input2 = new ArrayList<Course>();
+		input2.add(test_course_2);
+		assertEquals(fill.call_filter(CBList, input2).isEmpty(), true);
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[10] = true;
+		assertEquals(teSlot_3.getSectionCode(), fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[3] = true;
+		assertEquals(teSlot_1.getSectionCode(), fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[4] = true;
+		assertEquals(teSlot_2.getSectionCode(), fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[2] = true;
+		assertEquals(teSlot_3.getSectionCode(), fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[5] = true;
+		assertEquals(teSlot_4.getSectionCode(), fill.call_filter(CBList, input).get(0).getSlot(0).getSectionCode());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[6] = true;
+		assertEquals(true, fill.call_filter(CBList, input).isEmpty());
+		
+		Arrays.fill(CBList, Boolean.FALSE);
+		CBList[7] = true;
+		assertEquals(true, fill.call_filter(CBList, input).isEmpty());
 	}
 	
 	@Test
@@ -215,6 +273,36 @@ public class FilterTester {
 		
 		Arrays.fill(arr, 0);
 		arr[0] = 100;
+		assertEquals(false, fill.filterday(temp, arr).contains(s2.getSectionCode()));
+		
+		Arrays.fill(arr, 0);
+		arr[0] = 100;
+		arr[1] = 100;
+		assertEquals(false, fill.filterday(temp, arr).contains(s2.getSectionCode()));
+		
+		Arrays.fill(arr, 0);
+		arr[0] = 100;
+		arr[2] = 100;
+		assertEquals(false, fill.filterday(temp, arr).contains(s2.getSectionCode()));
+		
+		Arrays.fill(arr, 0);
+		arr[0] = 100;
+		arr[3] = 100;
+		assertEquals(false, fill.filterday(temp, arr).contains(s2.getSectionCode()));
+		
+		Arrays.fill(arr, 0);
+		arr[0] = 100;
+		arr[3] = 100;
+		assertEquals(false, fill.filterday(temp, arr).contains(s2.getSectionCode()));
+		
+		Arrays.fill(arr, 0);
+		arr[0] = 100;
+		arr[4] = 100;
+		assertEquals(false, fill.filterday(temp, arr).contains(s2.getSectionCode()));
+		
+		Arrays.fill(arr, 0);
+		arr[0] = 100;
+		arr[5] = 100;
 		assertEquals(false, fill.filterday(temp, arr).contains(s2.getSectionCode()));
 	}
 	
