@@ -55,10 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
-/**
- * @author jacky tam
- *
- */
 public class Controller implements Initializable{
 	private static List<Course> myCourseList = new ArrayList<Course>();
 	private static List<String> subject;
@@ -258,7 +254,7 @@ public class Controller implements Initializable{
     @FXML
     private void enrollmentUpdate() {
     	
-    	if (filterCourse == null) {
+    	if (filterCourse.isEmpty()) {
     		tblist.clear();
     		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
     		return;
@@ -345,10 +341,8 @@ public class Controller implements Initializable{
     
     private void updateList() {
     	this.tblist.clear();
-//    	textAreaConsole.setText("enter");
 
-
-    	if (filterCourse == null) {
+    	if (filterCourse.isEmpty()) {
     		tblist.clear();
     		tblist.add(new Courselist("N/A","N/A","N/A","N/A"));
     		return;
@@ -363,7 +357,6 @@ public class Controller implements Initializable{
     		for(int i=0;i<curr.getNumSlots();i++) {
     			Courselist currCour = new Courselist(titleL[0], curr.getSlot(i).getSectionCode(), titleL[1], curr.getSlot(i).getInstructor());
     			String CourRefID = titleL[0] + "--" + curr.getSlot(i).getSectionCode();
-//    			textAreaConsole.setText(CourRefID+"2222222222222222222222");
     			
     			if (EnrolledCourse.contains(CourRefID)) {
     				currCour.getEnroll().setSelected(true);
@@ -372,7 +365,6 @@ public class Controller implements Initializable{
     			 * add the course section the checkedID reference set
     			 * and add this course section to the table list to show it
     			 */
-    			// I don't need to understand this -Andrew
     			if(checkedID.contains(CourRefID) == false) {
     				checkedID.add(CourRefID);
     				tblist.add(currCour);
@@ -380,7 +372,6 @@ public class Controller implements Initializable{
     		}
     		
     	}
-//    	tblist.get(0).getEnroll()
     	courseCode.setEditable(false);
     	sectionCode.setEditable(false);
     	courseName.setEditable(false);
