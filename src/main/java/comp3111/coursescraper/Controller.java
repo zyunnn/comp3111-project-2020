@@ -469,7 +469,7 @@ public class Controller implements Initializable{
     		String newline = c.getTitle() + "\n";
     		for (int i = 0;i<c.getNumSlots();i++) {
     			Slot curr_slot = c.getSlot(i);
-    			newline += curr_slot.getDay() + "day check" + "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
+    			newline += "Section " + curr_slot.getSectionCode() + " Slot " + i + ":" + curr_slot.toString()+ "\n";
     		}
     		text_on_console += newline + "\n";
     	} 	
