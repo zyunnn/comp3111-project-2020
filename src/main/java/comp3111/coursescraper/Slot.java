@@ -28,6 +28,7 @@ public class Slot {
 		s.end = this.end;
 		s.venue = this.venue;
 		s.sectionCode = this.sectionCode;
+		s.instructor = this.instructor;
 		return s;
 	}
 	public String toString() {
@@ -122,4 +123,5 @@ public class Slot {
 	public String getSectionCode() {
 		return sectionCode;
 	}
+
 }

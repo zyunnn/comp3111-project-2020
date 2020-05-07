@@ -10,6 +10,8 @@ public class Course {
 	private String description ;
 	private String exclusion;
 
+
+
 	private Slot [] slots;
 	private int numSlots;
 	private boolean isCommonCore;
@@ -18,6 +20,17 @@ public class Course {
 		slots = new Slot[DEFAULT_MAX_SLOT];
 		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
 		numSlots = 0;
+	}
+	
+	@SuppressWarnings("static-access")
+	public Course clone() {
+		Course one = new Course();
+		one.setDescription(this.description);
+		one.setExclusion(this.exclusion);
+		one.setTitle(this.title);
+		one.numCourse = this.getNumCourse();
+		one.allCourse = this.getAllCourse();
+		return one;
 	}
 	
 	public void addSlot(Slot s) {
@@ -30,6 +43,12 @@ public class Course {
 			return slots[i];
 		return null;
 	}
+	public void resetSlot() {
+		slots = new Slot[DEFAULT_MAX_SLOT];
+		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
+		numSlots = 0;
+	}
+
 
 	/**
 	 * @return the title
@@ -128,13 +147,18 @@ public class Course {
 	public static void resetNumCourse() {
 		numCourse = 0;
 	}
+
+
 	
 	/**
 	 * @param common core details
 	 */
 	public void setCommonCore(String commonCore) {
-		if (!(commonCore == null))
+// 		System.out.println(title + "<_____details ------>" + commonCore);
+		if (commonCore.contains("Common"))
 			this.isCommonCore = true;
+		else
+			this.isCommonCore = false;
 	}
 	
 	/**
