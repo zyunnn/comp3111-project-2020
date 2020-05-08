@@ -65,7 +65,10 @@ public class FilterTester {
 	int dayy_4 = 3;
 	Boolean [] CBList = new Boolean[11];
 
-	
+	/**
+	 * Constrctor 
+	 * @throws Exception Errors discovered during construction
+	 */
 	@Before
 	public void setUp() throws Exception {
 		Arrays.fill(CBList, Boolean.FALSE);

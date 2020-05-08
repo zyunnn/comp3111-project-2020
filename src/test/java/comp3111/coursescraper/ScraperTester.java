@@ -26,17 +26,25 @@ import javafx.stage.Stage;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+/**
+ * Tester to test the Scraper class
+ * @author zhou zhuo rui
+ *
+ */
 public class ScraperTester extends ApplicationTest{
 
-	String test_url;
+	private String test_url;
 	
-	Scraper scraper = new Scraper();
+	private Scraper scraper = new Scraper();
 	
     @FXML
     private TextField textfieldSfqUrl;
 	
 	private Scene s;
 	
+	/**
+	 * Codes necessary for setting up the stage for FXML
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
     	FXMLLoader loader = new FXMLLoader();
@@ -49,6 +57,10 @@ public class ScraperTester extends ApplicationTest{
    		s = scene;
 	}
 	
+	/**
+	 * Constructor for url value
+	 * @throws Exception Errors during constructor
+	 */
 	@Before
 	public void setUp() throws Exception{
 		TextField input_url_tf = (TextField)s.lookup("#textfieldSfqUrl");
@@ -56,11 +68,17 @@ public class ScraperTester extends ApplicationTest{
 		test_url = input_url_tf.getText();
 	}
 	
+	/**
+	 * Test if sfqcourse runs normally
+	 */
 	@Test
 	public void testsfqcourse() {
 		scraper.sfqcourse(test_url);
 	}
 	
+	/**
+	 * Test if sfqins runs normally
+	 */
 	@Test
 	public void testsfqins() {
 		scraper.sfqins(test_url);
