@@ -13,14 +13,47 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 
+/**
+ * Represents a row inserted in the tableview CourselistTable
+ * A tableview can have many Courselist
+ * */
 public class Courselist {
-	
+	/**
+	 * The course code of a course
+	 * */
+
 	private final SimpleStringProperty courseCode = new SimpleStringProperty("");
+	
+	/**
+	 * The section code of a section of a course
+	 * */
 	private final SimpleStringProperty sectionCode= new SimpleStringProperty("");
+	
+	/**
+	 * The name of a course
+	 * */
 	private final SimpleStringProperty courseName= new SimpleStringProperty("");
+	
+	/**
+	 * The instructor name of a course section
+	 * **/
 	private final SimpleStringProperty instructor= new SimpleStringProperty("");
+	
+	/**
+	 * The check-box item for enrollment
+	 * */
 	private CheckBox enbox = new CheckBox();
+	
+	/**
+	 * A boolean flag to whether the enrollment is selected or not
+	 * */
 	private final BooleanProperty checked= new SimpleBooleanProperty(false);
+	
+	/**
+	 * The status of a course
+	 * =0 not enrolled
+	 * >0 enrolled
+	 * */
 	private int status;
 	
 	/**
