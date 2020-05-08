@@ -394,11 +394,18 @@ public class Scraper {
 	}
 	
 	public Hashtable<String,Float> sfqcourse(String url) {
+		
+		sfqcs_final.clear();
+		float error = -1;
+		sfqcs_final.put("No course sfq info scraped from given link: ", error);
+		
 		try {
 
 			HtmlPage page = client.getPage(url);
 //			List<?> items = (List<?>) page.getByXPath(".//table");
 			List<?> bs = (List<?>) page.getByXPath(".//b");
+			
+			sfqcs_final.clear();
 			
 			for (int i = 0; i < bs.size(); i++) {
 				HtmlElement b = (HtmlElement) bs.get(i);
@@ -598,11 +605,18 @@ public class Scraper {
 
 	
 	public Hashtable<String,Float> sfqins(String url) {
+		sfqins_final.clear();
+		float error = -1;
+		sfqins_final.put("No instructor sfq info scraped: ", error);
+		
 		try {
-
 			HtmlPage page = client.getPage(url);
 //			List<?> items = (List<?>) page.getByXPath(".//table");
 			List<?> bs = (List<?>) page.getByXPath(".//b");
+			
+			// At this the web should be scrapable
+			
+			sfqins_final.clear();
 			
 			for (int i = 0; i < bs.size(); i++) {
 				HtmlElement b = (HtmlElement) bs.get(i);

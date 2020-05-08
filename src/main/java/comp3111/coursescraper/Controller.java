@@ -617,7 +617,8 @@ public class Controller implements Initializable{
     	enrollbox.setCellValueFactory(new PropertyValueFactory<Courselist,CheckBox>("enroll"));
     	enrollbox.setCellValueFactory(cellData -> cellData.getValue().getCheckBox());
 
-    	buttonInstructorSfq.setDisable(true);
+//    	buttonInstructorSfq.setDisable(true);
+//		There is no need to disable buttonInstructorSfq since the requirement does not indicate so
     	buttonSfqEnrollCourse.setDisable(true);
     	
     	tblist.clear();
@@ -634,7 +635,7 @@ public class Controller implements Initializable{
     	
     	String display = "";
     	
-    	String sfqurl = "file:///C:/Users/zhou%20zhuo%20rui/git/comp3111-project-2020/src/main/resources/sfq.html";
+    	String sfqurl = textfieldSfqUrl.getText();
     	
     	Hashtable<String,Float> sfqins = scraper.sfqins(sfqurl);
     	
@@ -657,7 +658,7 @@ public class Controller implements Initializable{
     	
     	String display = "";
     	
-    	String sfqurl = "file:///C:/Users/zhou%20zhuo%20rui/git/comp3111-project-2020/src/main/resources/sfq.html";
+    	String sfqurl = textfieldSfqUrl.getText();
     	
     	Hashtable<String,Float> sfqcourse = scraper.sfqcourse(sfqurl);
     	
