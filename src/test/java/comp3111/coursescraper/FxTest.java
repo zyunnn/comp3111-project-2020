@@ -65,7 +65,7 @@ public class FxTest extends ApplicationTest {
 		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertTrue(!b.isDisabled());
 		clickOn("#buttonDisplay");
-		sleep(30000);
+		sleep(50000);
 		
 		clickOn("#tabFilter");
 		sleep(5000);
@@ -104,15 +104,28 @@ public class FxTest extends ApplicationTest {
 		
 		sleep(500);
 		clickOn("#tabList");
-		TableView tt = (TableView)s.lookup("CourseListTable");
-//		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
-//		assertTrue(((Courselist) tt.getItems().get(0)).getEnroll().isSelected());
-//		
-//		interact(() -> {
-//			tt.getSelectionModel().selectLast();
-//		});
-//		sleep(500);
+		TableView tt = (TableView)s.lookup("#CourseListTable");
+		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
+		sleep(500);	
 		
+		clickOn("#tabFilter");
+		clickOn("#SelectALL");
+		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("De-select All"));
+		sleep(500);
 		
+		clickOn("#SelectALL");
+		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("Select All"));
+		sleep(500);
+		
+		clickOn("#AmBox");
+		CheckBox amm = (CheckBox)s.lookup("#AmBox");
+		sleep(200);
+		assertTrue(amm.isSelected());
+		
+		sleep(500);
+		clickOn("#tabList");
+		TableView ttt = (TableView)s.lookup("#CourseListTable");
+		((Courselist) ttt.getItems().get(0)).getEnroll().setSelected(true);
+		sleep(500);
 	}
 }
