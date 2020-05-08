@@ -55,16 +55,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
+/**
+ * Controller provides the search, display, filter, enroll, and timetable schedule
+ * functions in response to user's input through the GUI.
+ * 
+ * allSubjectSearch() is implemented for the AllSubjectSearch tab. Clicking the 
+ * 					  "All Subject Search" button outputs total number of subjects
+ * 					  in the semester. Following that, clicking the "Display Search 
+ * 					  Result" button displays all course information for that semester,
+ * 					  along with the total number of courses fetched in the search. The
+ * 					  progress bar is updated as scraping of one subject is completed. A
+ * 					  green progress bar indicates the scraping is finished.
+ * 
+ * search() is implemented for the Main tab. Course information, instructor without
+ * 			teaching assignment on Tuesday 3:10pm should be displayed after clicking 
+ * 			the "Search" button. 
+ */
+
 public class Controller implements Initializable{
 	private static List<Course> myCourseList = new ArrayList<Course>();
 	private static List<String> subject;
+	/**
+	 * A list of course object contained all the filtered courses
+	 * */
 	private List<Course> filterCourse;
 	private List<Course> drawCourse = new ArrayList<Course>();
+	/**
+	 * A list of string contains course name and section of the enrolled course
+	 * */
 	private List<String> EnrolledCourse = new ArrayList<String>();
 	private List<Label> drawedLabel = new ArrayList<Label>();
 	private List<Course> drawedCourse = new ArrayList<Course>();
 	
 	private Map<String, Color> map = new HashMap<String, Color>();
+	/**
+	 * A string to contain the text_on_console to be shown in the text console
+	 * */
 	private String text_on_console;
 	
 	
@@ -176,10 +202,13 @@ public class Controller implements Initializable{
     @FXML
     private TableColumn<Courselist, CheckBox> enrollbox;
     
+
+    private Scraper scraper = new Scraper();
+    
+
     
 	/**
 	 * An initiate function when the list tab is selected
-	 * @return Nothing
 	 * */
     @FXML
     private void switchToList() {
@@ -189,9 +218,7 @@ public class Controller implements Initializable{
     
 	/**
 	 * A function to select / de-select all the check-boxes when the button "Select All" is clicked
-	 * @return Nothing
 	 * */
-
     @FXML
     private void handleSelectAll() {
     	if (SelectALL.getText().equals("Select All")) {
@@ -230,7 +257,6 @@ public class Controller implements Initializable{
 
 	/**
 	 * A function to print all the enrolled course and filtered course information
-	 * @return Nothing
 	 * */
     private void course_enrollment_start() {
     	enrollmentUpdate();
@@ -249,7 +275,6 @@ public class Controller implements Initializable{
     //After handlebox function
 	/**
 	 * A function to update the enrollment course in the EnrolledCourse list
-	 * @return Nothing
 	 * */
     @FXML
     private void enrollmentUpdate() {
@@ -340,7 +365,6 @@ public class Controller implements Initializable{
     
 	/**
 	 * A function to update the courses shown in the list table based on the filtered and enrolled courses
-	 * @return Nothing
 	 * */
     private void updateList() {
     	this.tblist.clear();
@@ -390,7 +414,6 @@ public class Controller implements Initializable{
 	/**
 	 * A function initiated when any of the check-box is selected or de-selected.
 	 * And it will print out all the filtered courses in the textAreaConsole
-	 * @return Nothing
 	 * */
     @FXML
     private void handleBox() {
@@ -480,17 +503,11 @@ public class Controller implements Initializable{
     	
     	return;
     }
-
     
-    private Scraper scraper = new Scraper();
-    
-
     
     @FXML
-    void allSubjectSearch() {
-    	// Debugging purpose
-//    	System.out.println("Enter function");
-    	
+    private void allSubjectSearch() {
+    	// Setup for new search
     	buttonSfqEnrollCourse.setDisable(false);
     	buttonInstructorSfq.setDisable(false);
     	resetCourseList();				// Reset static variable myCourseList
@@ -503,31 +520,18 @@ public class Controller implements Initializable{
     	// Get number of code prefix
     	List<String> subjects = scraper.scrapeAllSubject(textfieldURL.getText(), textfieldTerm.getText());
     	int totalSubjectCount = subjects.size();
-//    	int totalSubjectCount = Course.getAllCourse();
     	textAreaConsole.setText("Total Number of Categories/Code Prefix: " + totalSubjectCount);
-//    	buttonAllSubjectSearch.setText("Click again to display all courses");
     	
     	// Display result on click event
     	buttonDisplay.setOnAction(e -> {
-//    		if (buttonAllSubjectSearch.getText().equals("Click again to display all courses")) {
         	final Task<Void> allSearchThread = new Task<Void>() {
         		
         		@Override
         		protected Void call() throws Exception {
     		    	
     		    	int subjectCount = 0;
-//    		    	int courseCount = 0;
-    		    	
     		    	for (String subject : subjects) {
     		    		List<Course> v = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(), subject);
-    		    		
-    		    		// Debugging purpose
-//    		    		if (myCourseList.isEmpty()) 
-//    		    			System.out.println("Empty course list");
-//    		    		else 
-//    		    			System.out.println("Filled course list " + myCourseList.size());
-    		    		
-
     		    		String newline = "";
     		        	for (Course c : v) {
     		        		myCourseList.add(c);
@@ -539,16 +543,16 @@ public class Controller implements Initializable{
     		        	}
     		        	textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
     		    		subjectCount++;
-//    		    		courseCount += v.size();
     		    		updateProgress(subjectCount+1, totalSubjectCount);
     		    		System.out.println("Subject " + subject + " is done.");
     		    	}
-		    		
+    		    	
     		    	// courseCount
     		    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + "Total Number of Courses fetched: " + Course.getAllCourse());
     		    	return null;
         		}
         	};
+        	
         	// Use Java thread for scraping and update 
         	Thread thread = new Thread(allSearchThread, "scrape-thread");
         	progressbar.progressProperty().bind(allSearchThread.progressProperty());
@@ -559,27 +563,21 @@ public class Controller implements Initializable{
         	progressbar.progressProperty().addListener(observable -> {
         		if (progressbar.getProgress() == 1) {
         			progressbar.setStyle("-fx-accent: forestgreen;");
-//        			thread.interrupt();
-//        			System.out.println("Thread interrupted" + thread.isInterrupted());
         		}
         	});
-//    			}
-//    		buttonAllSubjectSearch.setText("All Subject Search");
-        	// Debugging purpose
-    		System.out.println("Finished subject search");
-    		});
+    	});
     	
     	// To draw the timetable if the enrollment is not yet implemented
     	if (enrollbox.isEditable()==false) {
     		drawtable();
     	}
-    	}
+    }
 
 	/**
 	 * Initialization function to initialize all the table column in the tableview list
 	 * and add a listener function to "enroll" checkbox column to capture any change in the selection
 	 * status of the "enroll" checkbox column
-	 * @return Nothing
+	 * return Nothing
 	 * */
     @Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -677,7 +675,8 @@ public class Controller implements Initializable{
     }
 
 	@FXML
-    void search() {
+    private void search() {
+		// Setup for new search
 		buttonSfqEnrollCourse.setDisable(false);
 		buttonInstructorSfq.setDisable(false);
 		resetCourseList();				// Reset static variable myCourseList 
@@ -700,18 +699,12 @@ public class Controller implements Initializable{
     	else {
     		myCourseList = v;
     		
-    		// Debugging purpose
-//    		if (myCourseList.isEmpty()) 
-//    			System.out.println("Empty course list");
-//    		else 
-//    			System.out.println("Filled course list " + myCourseList.size());
-    		
     		// Get search result statistics
     		String info1 = "Total number of different Sections in this search: " + Section.getNumSections() + "\n";
     		String info2 = "Total number of Courses in this search: " + Course.getNumCourse() + "\n";
     		String info3 = "Instructor who has teaching assignment this term but does not need to teach at Tu 3:10pm: \n";
     		
-    		//Print instructor info
+    		// Print instructor info
     		List<String> nameList = Instructor.getInstructorNoTu1510();
     		for (String name : nameList) {
     			info3 += name + "\n";
@@ -719,9 +712,7 @@ public class Controller implements Initializable{
     		textAreaConsole.setText(info1 + info2 + info3);
     		
         	for (Course c : myCourseList) {
-
         		String newline = c.getTitle() + "\n";
-//        		System.out.println("Number slots" + c.getNumSlots());
         		for (int i = 0; i < c.getNumSlots(); i++) {
         			Slot t = c.getSlot(i);
         			newline += "Section " + t.getSectionCode() + "\tSlot " + (i+1) + ":" + t + "\n";
@@ -763,6 +754,7 @@ public class Controller implements Initializable{
 		//Transparency issue done
     	//Add a random block on Saturday
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
+
     
     	for(Label l:drawedLabel) {
     		ap.getChildren().remove(l);

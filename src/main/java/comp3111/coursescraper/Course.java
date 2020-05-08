@@ -1,6 +1,11 @@
 package comp3111.coursescraper;
 
-
+/**
+ * A course can be identified by a unique course code. COMP3111 and 
+ * COMP3111H are two different courses although they are colisted. A
+ * course should have information on its title, description, exclusion,
+ * common core, slots and number of slots associated with it.
+ */
 
 public class Course {
 	private static final int DEFAULT_MAX_SLOT = 100;
@@ -9,6 +14,7 @@ public class Course {
 	private String title ; 
 	private String description ;
 	private String exclusion;
+
 	private int enrollednum;
 
 
@@ -17,6 +23,9 @@ public class Course {
 	private int numSlots;
 	private boolean isCommonCore;
 	
+	/**
+	 * Default constructor for Course
+	 */
 	public Course() {
 		slots = new Slot[DEFAULT_MAX_SLOT];
 		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
@@ -27,6 +36,9 @@ public class Course {
 	}
 	
 	@SuppressWarnings("static-access")
+	/**
+	 * Copy constructor of Course
+	 * */
 	public Course clone() {
 		Course one = new Course();
 		one.setDescription(this.description);
@@ -37,6 +49,10 @@ public class Course {
 		return one;
 	}
 	
+	/**
+	 * Add a new slot the course
+	 * @param s		slot to be copied to the course
+	 */
 	public void setEnrollStatus(int i, boolean status) {
 		enrollstatus[i] = status;
 		if (status) {
@@ -60,123 +76,130 @@ public class Course {
 			return;
 		slots[numSlots++] = s.clone();
 	}
+	
+	/**
+	 * Get slot information given its index 
+	 * @param i		index of the slot
+	 * @return slot corresponding to the given index
+	 */
 	public Slot getSlot(int i) {
 		if (i >= 0 && i < numSlots)
 			return slots[i];
 		return null;
 	}
+	
+	/**
+	 * Clear and reset all slot information of the course
+	 */
 	public void resetSlot() {
 		slots = new Slot[DEFAULT_MAX_SLOT];
 		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
 		numSlots = 0;
 	}
 
-
 	/**
-	 * @return the title
+	 * @return title of the course
 	 */
 	public String getTitle() {
 		return title;
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title of the course
 	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
 	/**
-	 * @return the description
+	 * @return description of the course
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description	course overview
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return the exclusion
+	 * @return exclusion of the course
 	 */
 	public String getExclusion() {
 		return exclusion;
 	}
 
 	/**
-	 * @param exclusion the exclusion to set
+	 * @param exclusion		exclusion of the course
 	 */
 	public void setExclusion(String exclusion) {
 		this.exclusion = exclusion;
 	}
 
 	/**
-	 * @return the numSlots
+	 * @return number of slots associated with the course
 	 */
 	public int getNumSlots() {
 		return numSlots;
 	}
 
 	/**
-	 * @param the numSlots to set
+	 * @param numSlots	number of slots associated with the course
 	 */
 	public void setNumSlots(int numSlots) {
 		this.numSlots = numSlots;
 	}
 	
-	/*
-	 * increase number of all courses (including those without a valid section) 
+	/**
+	 * Increase the count of all courses (include those without a valid section) 
 	 */
 	public static void incrementAllCourse() {
 		allCourse++;
 	}
 
 	/**
-	 * @return number of all courses (including those without a valid section)
+	 * @return count of all courses (include those without a valid section)
 	 */
 	public static int getAllCourse() {
 		return allCourse;
 	}
 	
-	/*
-	 * reset static variable allCourse
+	/**
+	 * Reset count of all courses for new search
 	 */
 	public static void resetAllCourse() {
 		allCourse = 0;
 	}
 	
-	/*
-	 * increase number of valid course by 1 
+	/**
+	 * Increase the count of valid course (exclude those without a valid section)
 	 */
 	public static void incrementNumCourse() {
 		numCourse++;
 	}
 
 	/**
-	 * @return number of courses
+	 * @return count of valid course
 	 */
 	public static int getNumCourse() {
 		return numCourse;
 	}
 	
-	/*
-	 * reset static variable numCourse
+	/**
+	 * Reset count of valid course for new search
 	 */
 	public static void resetNumCourse() {
 		numCourse = 0;
 	}
-
-
 	
 	/**
-	 * @param common core details
+	 * Indicate whether the course is a common core
+	 * @param commonCore	common core details 
 	 */
 	public void setCommonCore(String commonCore) {
-// 		System.out.println(title + "<_____details ------>" + commonCore);
 		if (commonCore.contains("Common"))
 			this.isCommonCore = true;
 		else
@@ -184,7 +207,7 @@ public class Course {
 	}
 	
 	/**
-	 * @return if course is a common core
+	 * @return if the course is a common core
 	 */
 	public boolean checkCommonCore() {
 		return isCommonCore;

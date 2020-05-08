@@ -13,30 +13,57 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 
+/**
+ * Represents a row inserted in the tableview CourselistTable
+ * A tableview can have many Courselist
+ * */
 public class Courselist {
+	/**
+	 * The course code of a course
+	 * */
+
 	private final SimpleStringProperty courseCode = new SimpleStringProperty("");
+	
+	/**
+	 * The section code of a section of a course
+	 * */
 	private final SimpleStringProperty sectionCode= new SimpleStringProperty("");
+	
+	/**
+	 * The name of a course
+	 * */
 	private final SimpleStringProperty courseName= new SimpleStringProperty("");
+	
+	/**
+	 * The instructor name of a course section
+	 * **/
 	private final SimpleStringProperty instructor= new SimpleStringProperty("");
+	
+	/**
+	 * The check-box item for enrollment
+	 * */
 	private CheckBox enbox = new CheckBox();
+	
+	/**
+	 * A boolean flag to whether the enrollment is selected or not
+	 * */
 	private final BooleanProperty checked= new SimpleBooleanProperty(false);
+	
+	/**
+	 * The status of a course
+	 * =0 not enrolled
+	 * >0 enrolled
+	 * */
 	private int status;
 	
 	/**
 	 * A copy constructor of Courselist object
-	 * @return Courselist an object of Courselist class
 	 * @param code course code of the Courselist object
 	 * @param section section code of the Courselist object
 	 * @param name name of the Courselist object
 	 * @param instructor instructor name of the Courselist object
-	 * @return a Courselist object
 	 * */
 	public Courselist(String code, String section, String name, String instructor) {
-//		this.courseCode = new SimpleStringProperty(code);
-//		this.sectionCode = new SimpleStringProperty (section);
-//		this.courseName = new SimpleStringProperty (name);
-//		this.instructor = new SimpleStringProperty (instructor);
-//		this.checked = new SimpleBooleanProperty(false);
 		this.courseCode.set(code);
 		this.sectionCode.set(section);
 		this.courseName.set(name);
@@ -45,20 +72,9 @@ public class Courselist {
 		this.enbox = new CheckBox();
 		this.status = 0;
 	}
-//	
-//	public Courselist() {
-//		this.courseCodeProperty();
-//		this.sectionProperty();
-//		this.instructorProperty();
-//		this.courseNameProperty();
-//		this.checked = new SimpleBooleanProperty(false);
-//		this.enbox = new CheckBox();
-//		this.status = 0;
-//	}
 	
 	/**
 	 * Default Constructor
-	 * @return String course code of the course
 	 * */
 	public Courselist() {
 
@@ -74,7 +90,7 @@ public class Courselist {
 	
 	/**
 	 * A function to set the course code of the Courselist object
-	 * @return Nothing
+	 * @param code course code of the course to be set
 	 * */
 	public void setCourseCode(String code) {
 		this.courseCode.set(code);
@@ -93,7 +109,6 @@ public class Courselist {
 	 * @return StringProperty course code property of simple string property
 	 * */
 	public StringProperty courseCodeProperty() { 
-//        if (courseCode == null) courseCode = new SimpleStringProperty(this, "courseCode");
         return courseCode; 
     }
 
@@ -107,7 +122,7 @@ public class Courselist {
 
 	/**
 	 * A function to set the section code of the Courselist object
-	 * @return Nothing
+	 * @param sectionC section code of the course to be set
 	 * */
 	public void setSectionCode(String sectionC) {
 		this.sectionCode.set(sectionC);
@@ -118,7 +133,6 @@ public class Courselist {
 	 * @return StringProperty section code property of type simple string property
 	 * */
 	public StringProperty sectionProperty() { 
-//        if (sectionCode == null) sectionCode = new SimpleStringProperty(this, "section");
         return sectionCode; 
     }
 	
@@ -133,10 +147,8 @@ public class Courselist {
 	/**
 	 * A function to set the course name of the Courselist object
 	 * @param courseName course name of string type
-	 * @return Nothing
 	 * */
 	public void setCourseName(String courseName) {
-//		this.courseName = new SimpleStringProperty(courseName);
 		this.courseName.set(courseName);
 	}
 	
@@ -145,7 +157,6 @@ public class Courselist {
 	 * @return StringProperty course name property of type simple string property
 	 * */
 	public StringProperty courseNameProperty() { 
-//        if (courseName == null) courseName = new SimpleStringProperty(this, "courseName");
         return courseName; 
     }
 
@@ -160,10 +171,8 @@ public class Courselist {
 	/**
 	 * A function to set the instructor name of the Courselist object
 	 * @param instructor instructor name of string type
-	 * @return Nothing
 	 * */
 	public void setInstructor(String instructor) {
-//		this.instructor = new SimpleStringProperty(instructor);
 		this.instructor.set(instructor);
 	}
 
@@ -172,7 +181,6 @@ public class Courselist {
 	 * @return StringProperty instructor property of type simple string property
 	 * */
 	public StringProperty instructorProperty() { 
-//        if (instructor == null) instructor = new SimpleStringProperty(this, "instructor");
         return instructor; 
     }
 	
@@ -187,7 +195,6 @@ public class Courselist {
 	/**
 	 * A function to set the Enrollment Box of the Courselist object
 	 * @param enroll a CheckBox object
-	 * @return Nothing
 	 * */
 	public void setEnroll(CheckBox enroll) {
 		this.enbox = enroll;
@@ -204,7 +211,6 @@ public class Courselist {
 	/**
 	 * A function to set the status flag of the Courselist object
 	 * @param status status value
-	 * @return Nothing
 	 * */
 	public void setStatus(int status) {
 		this.status = status;
@@ -220,7 +226,7 @@ public class Courselist {
 
 	/**
 	 * A function to return the observable value of the check box type
-	 * @return ObservableValue<CheckBox>
+	 * @return a ObservableValue list of checkbox type
 	 * */
     public ObservableValue<CheckBox> getCheckBox() {
         return new ObservableValue<CheckBox>() {

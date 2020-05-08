@@ -76,15 +76,15 @@ public class FxTest extends ApplicationTest {
 		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertTrue(!b.isDisabled());
 		clickOn("#buttonDisplay");
-		sleep(3000);
-    
+		sleep(50000);
+
+
 		clickOn("#tabFilter");
 		sleep(5000);
 		clickOn("#tabList");
 		sleep(5000);
 		clickOn("#tabStatistic");
 		sleep(1000);
-		
 		
 		Button b1 = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertFalse(b1.isDisable());
@@ -102,46 +102,6 @@ public class FxTest extends ApplicationTest {
 		sleep(3000);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	@Test
-	public void testfilter() {
-		sleep(500);
-		clickOn("#tabMain");
-		clickOn("#buttonSearch");
-		sleep(500);
-		
-		clickOn("#tabFilter");
-		clickOn("#SelectALL");
-		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("De-select All"));
-		sleep(500);
-		
-		clickOn("#SelectALL");
-		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("Select All"));
-		sleep(500);
-		
-		clickOn("#AmBox");
-		CheckBox am = (CheckBox)s.lookup("#AmBox");
-		sleep(200);
-		assertTrue(am.isSelected());
-		
-		clickOn("#PmBox");
-		CheckBox pm = (CheckBox)s.lookup("#PmBox");
-		sleep(200);
-		assertTrue(pm.isSelected());
-		
-		sleep(500);
-		clickOn("#tabList");
-		TableView tt = (TableView)s.lookup("CourseListTable");
-//		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
-//		assertTrue(((Courselist) tt.getItems().get(0)).getEnroll().isSelected());
-//		
-//		interact(() -> {
-//			tt.getSelectionModel().selectLast();
-//		});
-//		sleep(500);
-		
-		
-	}
 	
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -172,15 +132,88 @@ public class FxTest extends ApplicationTest {
 		
 		sleep(500);
 		clickOn("#tabList");
-		TableView tt = (TableView)s.lookup("CourseListTable");
-//		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
-//		assertTrue(((Courselist) tt.getItems().get(0)).getEnroll().isSelected());
-//		
-//		interact(() -> {
-//			tt.getSelectionModel().selectLast();
-//		});
-//		sleep(500);
+		TableView tt = (TableView)s.lookup("#CourseListTable");
+		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
+		sleep(500);	
 		
+		clickOn("#tabFilter");
+		clickOn("#SelectALL");
+		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("De-select All"));
+		sleep(500);
+		
+		clickOn("#SelectALL");
+		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("Select All"));
+		sleep(500);
+		
+		clickOn("#MondayBox");
+		clickOn("#PmBox");
+		sleep(100);
+		clickOn("#MondayBox");
+		clickOn("#PmBox");
+		sleep(100);
+		
+		clickOn("#AmBox");
+		CheckBox amm = (CheckBox)s.lookup("#AmBox");
+		sleep(200);
+		assertTrue(amm.isSelected());
+		
+		clickOn("#CCBox");
+		CheckBox cc = (CheckBox)s.lookup("#CCBox");
+		sleep(200);
+		assertTrue(cc.isSelected());
+		sleep(100);
+		clickOn("#NExclBox");
+		CheckBox ex = (CheckBox)s.lookup("#NExclBox");
+		sleep(200);
+		assertTrue(ex.isSelected());
+		sleep(100);
+		clickOn("#LabBox");
+		CheckBox lab = (CheckBox)s.lookup("#LabBox");
+		sleep(200);
+		assertTrue(lab.isSelected());
+		sleep(100);
+		
+		clickOn("#CCBox");
+		CheckBox ccc = (CheckBox)s.lookup("#CCBox");
+		sleep(200);
+		assertFalse(ccc.isSelected());
+		sleep(100);
+		clickOn("#NExclBox");
+		CheckBox exx = (CheckBox)s.lookup("#NExclBox");
+		sleep(200);
+		assertFalse(exx.isSelected());
+		sleep(100);
+		clickOn("#LabBox");
+		CheckBox labb = (CheckBox)s.lookup("#LabBox");
+		sleep(200);
+		assertFalse(labb.isSelected());
+		sleep(100);
+
+
+		
+		sleep(500);
+		clickOn("#tabList");
+		TableView ttt = (TableView)s.lookup("#CourseListTable");
+		((Courselist) ttt.getItems().get(1)).getEnroll().setSelected(true);
+		sleep(500);
+		
+		clickOn("#tabTimetable");
+		sleep(500);
+		clickOn("#tabList");
+		TableView tttt = (TableView)s.lookup("#CourseListTable");
+		((Courselist) tttt.getItems().get(1)).getEnroll().setSelected(false);
+		sleep(500);
+		clickOn("#tabTimetable");
+		sleep(500);
 		
 	}
+	@Test
+	public void testtimetable() {
+		sleep(500);
+		clickOn("#tabMain");
+		sleep(100);
+		clickOn("#tabTimetable");
+	}
+
+
 }

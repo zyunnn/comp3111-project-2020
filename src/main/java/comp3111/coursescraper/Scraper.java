@@ -104,6 +104,18 @@ public class Scraper {
 		client.getOptions().setJavaScriptEnabled(false);
 	}
 
+	/**
+	 * Add new slot(s) to a course, along with the sectionCode to keep track of the section 
+	 * it belongs to. Information regarding time, venue and instructor of the slot is 
+	 * extracted. Two different format for time (i.e. We 03:00PM - 04:50PM and 
+	 * 29-AUG-2019 - 10-OCT-2019 Th 09:30AM - 12:50PM) are handled. Slot with time=TBA, 
+	 * earlier than 9am or later than 10pm is considered as invalid.
+	 * 
+	 * @param e				HtmlElement to get slot information
+	 * @param c				course in which the slot(s) should be added
+	 * @param secondRow		whether there is exists more than 1 slots to be added for this section
+	 * @param sectionCode	code of the slot's section
+	 */
 	private void addSlot(HtmlElement e, Course c, boolean secondRow, String sectionCode) {
 
 		String times[] =  e.getChildNodes().get(secondRow ? 0 : 3).asText().split(" ");
@@ -168,6 +180,22 @@ public class Scraper {
 		}
 	}
 
+	/**
+	 * Scrape course information based on the given url, term and subject in Main tab.
+	 * Error404 is handled by displaying an error message to the user when invalid 
+	 * URL is entered. Other HTMLerror will invoke an error message in the console 
+	 * instead of the GUI. Course that does not contain at least 1 valid section 
+	 * is considered as invalid, thus will not be added to the final scraping result.
+	 * Description, exclusion and common core detail of the course is obtained for
+	 * the enrollment function.
+	 * 
+	 * @param baseurl	site that host the course enrollment information, which is 
+	 * 					set to be https://w5.ab.ust.hk/wcq/cgi-bin/ by default
+	 * @param term		refers to academic year and term (Fall, Winter, Spring, Summer)
+	 * @param sub		subject of the course to be searched
+	 * @exception com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException if site cannot be found on the server		
+	 * @return list of courses stated on the site for the given semester and subject
+	 */
 	public List<Course> scrape(String baseurl, String term, String sub) {
 
 		try {
@@ -242,9 +270,6 @@ public class Scraper {
 					Course.incrementNumCourse();
 					result.add(c);
 				}
-				// Debugging purpose
-				else
-					System.out.println("Invalid course: " + c.getTitle());
 			}
 			client.close();
 			return result;
@@ -264,10 +289,23 @@ public class Scraper {
 		}
 		return null;
 	}
-		
 	
+	
+	/**
+	 * Scrape list of the subjects available on the given website and term. Error404 
+	 * is handled by displaying an error message to the user when invalid URL is 
+	 * entered. Other HTMLerror will invoke an error message in the console instead 
+	 * of the GUI.
+	 * 
+	 * @param baseurl	site that host the course enrollment information, which is 
+	 * 					set to be https://w5.ab.ust.hk/wcq/cgi-bin/ by default
+	 * @param term		refers to academic year and term (Fall, Winter, Spring, Summer)
+	 * @exception com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException if site cannot be found on the server
+	 * @return list of subjects on the site for the given term
+	 */
 	public List<String> scrapeAllSubject(String baseurl, String term) {
 		
+		// Get list of subjects in the given term
 		try {
 			HtmlPage page = client.getPage(baseurl + "/" + term + "/");
 			
@@ -286,7 +324,7 @@ public class Scraper {
 			if (e instanceof com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException &&
 					e.getMessage().substring(0,3).equals("404")) {
 				System.out.println("Invalid URL input for AllSubjectSearch");
-				return  null;
+				return null;
 			} else {
 				System.out.println(e);
 			}
