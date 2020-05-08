@@ -76,8 +76,9 @@ public class FxTest extends ApplicationTest {
 		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertTrue(!b.isDisabled());
 		clickOn("#buttonDisplay");
-		sleep(3000);
-    
+		sleep(50000);
+
+
 		clickOn("#tabFilter");
 		sleep(5000);
 		clickOn("#tabList");
@@ -102,46 +103,6 @@ public class FxTest extends ApplicationTest {
 		sleep(3000);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	@Test
-	public void testfilter() {
-		sleep(500);
-		clickOn("#tabMain");
-		clickOn("#buttonSearch");
-		sleep(500);
-		
-		clickOn("#tabFilter");
-		clickOn("#SelectALL");
-		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("De-select All"));
-		sleep(500);
-		
-		clickOn("#SelectALL");
-		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("Select All"));
-		sleep(500);
-		
-		clickOn("#AmBox");
-		CheckBox am = (CheckBox)s.lookup("#AmBox");
-		sleep(200);
-		assertTrue(am.isSelected());
-		
-		clickOn("#PmBox");
-		CheckBox pm = (CheckBox)s.lookup("#PmBox");
-		sleep(200);
-		assertTrue(pm.isSelected());
-		
-		sleep(500);
-		clickOn("#tabList");
-		TableView tt = (TableView)s.lookup("CourseListTable");
-//		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
-//		assertTrue(((Courselist) tt.getItems().get(0)).getEnroll().isSelected());
-//		
-//		interact(() -> {
-//			tt.getSelectionModel().selectLast();
-//		});
-//		sleep(500);
-		
-		
-	}
 	
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -172,15 +133,28 @@ public class FxTest extends ApplicationTest {
 		
 		sleep(500);
 		clickOn("#tabList");
-		TableView tt = (TableView)s.lookup("CourseListTable");
-//		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
-//		assertTrue(((Courselist) tt.getItems().get(0)).getEnroll().isSelected());
-//		
-//		interact(() -> {
-//			tt.getSelectionModel().selectLast();
-//		});
-//		sleep(500);
+		TableView tt = (TableView)s.lookup("#CourseListTable");
+		((Courselist) tt.getItems().get(0)).getEnroll().setSelected(true);
+		sleep(500);	
 		
+		clickOn("#tabFilter");
+		clickOn("#SelectALL");
+		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("De-select All"));
+		sleep(500);
 		
+		clickOn("#SelectALL");
+		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("Select All"));
+		sleep(500);
+		
+		clickOn("#AmBox");
+		CheckBox amm = (CheckBox)s.lookup("#AmBox");
+		sleep(200);
+		assertTrue(amm.isSelected());
+		
+		sleep(500);
+		clickOn("#tabList");
+		TableView ttt = (TableView)s.lookup("#CourseListTable");
+		((Courselist) ttt.getItems().get(0)).getEnroll().setSelected(true);
+		sleep(500);
 	}
 }
