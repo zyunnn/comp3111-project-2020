@@ -17,7 +17,6 @@ import javafx.scene.control.CheckBox;
 * A class to filter the course based on certain criteria
 * @version 1.0
 * @author Tam Wui Wo
-* @
 */
 public class Filter {
 
@@ -38,7 +37,7 @@ public class Filter {
 	
 	/**
 	 * A function to filter the course based on the buttons status in the filter tab
-	 * @return List<Course> list of filtered course
+	 * @return a list of course type
 	 * @param CBList list of boolean flag indicate the checkbox is clicked or not
 	 * @param input list of course scraped 
 	 */
@@ -271,7 +270,7 @@ public class Filter {
 	 * A function to check if the current course fulfill the AM or/and PM filters
 	 * @param input_c an object of class course
 	 * @param arr an array contained the flags indicate if AM or PM box is either or both selected
-	 * @return Set<String> a set of string contained all the section code of the input course fulfill the filters
+	 * @return a set of string contained all the section code of the input course fulfill the filters
 	 * */
 	public Set<String> filtertime(Course input_c, boolean [] arr) {
 		boolean AMM = arr[0];
@@ -316,7 +315,7 @@ public class Filter {
 	 * A function to check if the current course fulfill the day filters
 	 * @param input_c an object of class course
 	 * @param arr an array contained the flags indicate if any of the day checkbox selected
-	 * @return Set<String> a set of string contained all the section code of the input course fulfill the filters
+	 * @return a set of string contained all the section code of the input course fulfill the filters
 	 * */
 	public Set<String> filterday(Course input_c, int [] arr) {
 		int flag_Mon  = arr[0];
@@ -449,7 +448,7 @@ public class Filter {
 	
 	/**
 	 * A function to return all the section code of the course
-	 * @return Set<String> a set of string contains all the section code of the input course c 
+	 * @return a set of string contains all the section code of the input course c 
 	 * @param c a object of course type to select all the section codes
 	 * */
 	public Set<String> allsection (Course c){
