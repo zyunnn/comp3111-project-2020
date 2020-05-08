@@ -579,7 +579,7 @@ public class Controller implements Initializable{
 	 * Initialization function to initialize all the table column in the tableview list
 	 * and add a listener function to "enroll" checkbox column to capture any change in the selection
 	 * status of the "enroll" checkbox column
-	 * @return Nothing
+	 * return Nothing
 	 * */
     @Override
 	public void initialize(URL url, ResourceBundle rb) {
