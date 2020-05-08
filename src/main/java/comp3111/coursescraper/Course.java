@@ -69,6 +69,7 @@ public class Course {
 	 * @param i the number of the slot to be selected
 	 * */
 	public boolean getEnrollStatus(int i) {
+		
 		return enrollstatus[i];
 	}
 	
