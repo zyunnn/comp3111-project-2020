@@ -73,136 +73,264 @@ import java.util.ArrayList;
  */
 
 public class Controller implements Initializable{
-	private static List<Course> myCourseList = new ArrayList<Course>();
-	private static List<String> subject;
 	/**
-	 * A list of course object contained all the filtered courses
+	 *  A list of Course object recording the scrape result
+	 */
+	private static List<Course> myCourseList = new ArrayList<Course>();
+
+	/**
+	 * A list of Course object contained all the filtered courses
 	 * */
 	private List<Course> filterCourse;
+	
+	/**
+	 *  A list of Course object recording the course that needed to be drawed on the table
+	 */
 	private List<Course> drawCourse = new ArrayList<Course>();
+	
 	/**
 	 * A list of string contains course name and section of the enrolled course
 	 * */
 	private List<String> EnrolledCourse = new ArrayList<String>();
-	private List<Label> drawedLabel = new ArrayList<Label>();
-	private List<Course> drawedCourse = new ArrayList<Course>();
 	
+	/**
+	 * A list of FXML Label objects recording the label drawn on the timetable
+	 */
+	private List<Label> drawedLabel = new ArrayList<Label>();
+
+	/**
+	 * The map recording the corresponding Color object to a course represented by its code
+	 */
 	private Map<String, Color> map = new HashMap<String, Color>();
+	
 	/**
 	 * A string to contain the text_on_console to be shown in the text console
 	 * */
 	private String text_on_console;
 	
-	
+	/**
+	 * The tab of 'main' scene
+	 */
     @FXML
     private Tab tabMain;
 
+    /**
+     * The textfield for input term String in main
+     */
     @FXML
     private TextField textfieldTerm;
-
+    
+    /**
+     * The textfield for input subject String code to search
+     */
     @FXML
     private TextField textfieldSubject;
 
+    /**
+     * The button to provoke search function
+     */
     @FXML
     private Button buttonSearch;
 
+    /**
+     * The textfield for the input of url link to the webpage for scraping
+     */
     @FXML
     private TextField textfieldURL;
 
+    /**
+     * The tab of 'backend' scene
+     */
     @FXML
     private Tab tabStatistic;
 
+    /**
+     * The combobox of time slot
+     */
     @FXML
     private ComboBox<?> comboboxTimeSlot;
 
+    /**
+     * The tab of 'filter' scene 
+     */
     @FXML
     private Tab tabFilter;   
     
+    /**
+     * The AmBox Checkbox, to provoke the am condition in filter
+     */
     @FXML
     private CheckBox AmBox;
     
+    /**
+     * The PmBox Checkbox, to provoke the pm condition in filter
+     */
     @FXML
     private CheckBox PmBox;
     
+    /**
+     * The Monday Checkbox, to provoke the Monday condition in filter
+     */
     @FXML
     private CheckBox MondayBox;
     
+    /**
+     * The Tuesday Checkbox, to provoke the Tuesday condition in filter
+     */
     @FXML
     private CheckBox TuesdayBox;
     
+    /**
+     * The Wednesday Checkbox, to provoke the Wednesday condition in filter
+     */
     @FXML
     private CheckBox WednesdayBox;
     
+    /**
+     * The Thurseday Checkbox, to provoke the Thursday condition in filter
+     */
     @FXML
     private CheckBox ThursdayBox;
     
+    /**
+     * The Friday Checkbox, to provoke the Friday condition in filter
+     */
     @FXML
     private CheckBox FridayBox;
     
+    /**
+     * The Saturday Checkbox, to provoke the Saturday condition in filter
+     */
     @FXML
     private CheckBox SaturdayBox;
     
+    /**
+     * The Common core course Checkbox, to provoke the Common core course condition in filter
+     */
     @FXML
     private CheckBox CCBox;
     
+    /**
+     * The no-exclusion Checkbox, to provoke the no-exclusion condition in filter
+     */
     @FXML
     private CheckBox NExclBox;
     
+    /**
+     * The Lab Checkbox, to provoke the Lab condition in filter
+     */
     @FXML
     private CheckBox LabBox;
     
+    /**
+     * The select all button to provoke the event that select all the Checkbox above in the filter scene
+     */
     @FXML
     private Button SelectALL;
 
+    /**
+     * The tab of 'list' scene
+     */
     @FXML
     private Tab tabList;
 
+    /**
+     * The tab of 'Timetable' scene
+     */
     @FXML
     private Tab tabTimetable;
 
+    /**
+     * The tab of 'All subject search' scene
+     */
     @FXML
     private Tab tabAllSubject;
     
+    /**
+     * The button that provokes the event of searching all the subject
+     */
     @FXML
     private Button buttonAllSubjectSearch;
     
+    /**
+     * The button that provokes the event of displaying all the output from the search in the 
+     * all subject search
+     */
     @FXML
     private Button buttonDisplay;
 
+    /**
+     * The progress bar showing the progress of the searching
+     */
     @FXML
     private ProgressBar progressbar;
 
+    /**
+     * The TextField for the input of url link leading to the website for scraping
+     * the sfq score information
+     */
     @FXML
     private TextField textfieldSfqUrl;
 
+    /**
+     * The button that provokes the event of scraping the sfq score of enrolled courses
+     */
     @FXML
     private Button buttonSfqEnrollCourse;
 
+    /**
+     * The button that provokes the event of scraping the sfq score of every instructor
+     */
     @FXML
     private Button buttonInstructorSfq;
 
+    /**
+     * The console on the ui scene
+     */
     @FXML
     private TextArea textAreaConsole;
 
+    /**
+     * The table view showing the list of courses info,
+     * with a checkbox for enroll event.
+     * The courses in the list are the scrapted courses filtered
+     */
     @FXML
     private TableView<Courselist> CourseListTable;
     
+    /**
+     * The course code column of the listed courses
+     */
     @FXML
     private TableColumn<Courselist, String> courseCode;
 
+    /**
+     * The course section code column of the listed courses
+     */
     @FXML
     private TableColumn<Courselist, String> sectionCode;
 
+    /**
+     * The course name of the listed courses
+     */
     @FXML
     private TableColumn<Courselist, String> courseName;
 
+    /**
+     * The corresponding instructor of courses in the listed courses
+     */
     @FXML
     private TableColumn<Courselist, String> instructor;
 
+    /**
+     * The enroll boxes for the listed courses
+     */
     @FXML
     private TableColumn<Courselist, CheckBox> enrollbox;
     
-
+    /**
+     * Initiate scraper object for method implementation, for scraping tasks
+     */
     private Scraper scraper = new Scraper();
     
 
@@ -253,6 +381,10 @@ public class Controller implements Initializable{
     	}
     };
     
+    /**
+     * The observablelist of lists in the table, recording the Course objects
+     * scraped and passing the filter
+     */
     private ObservableList<Courselist> tblist = FXCollections.observableArrayList(item -> new javafx.beans.Observable[] {item.checkedProperty()});
 
 	/**
@@ -625,11 +757,16 @@ public class Controller implements Initializable{
     	CourseListTable.setItems(tblist);
 	}
     
+    /**
+     * The function that scrapes the instructor sfq score from the 
+     * url link provided in the textfield, and output the instructor name
+     * with corresponding sfq score in the console
+     */
     @FXML
-    void findInstructorSfq() {
+    public void findInstructorSfq() {
     	buttonInstructorSfq.setDisable(false);
     	
-    	System.out.println("sorry, I am here");
+//    	System.out.println("sorry, I am here");
     	
     	String display = "";
     	
@@ -648,8 +785,15 @@ public class Controller implements Initializable{
     	textAreaConsole.setText(display);
     }
 
+    /**
+     * The function first scrapes all the sfq score of coursesfrom the 
+     * url link provided in the textfield. It then compares the enrolled 
+     * course with the courses in the key set of recorded dictionary
+     * recording the correspondence between course and sfq score. It eventually
+     * output the enrolled courseswith corresponding sfq score in the console
+     */
     @FXML
-    void findSfqEnrollCourse() {
+    public void findSfqEnrollCourse() {
     	buttonSfqEnrollCourse.setDisable(false);
     	
     	System.out.println("sorry, I am here");
@@ -727,12 +871,22 @@ public class Controller implements Initializable{
     	}
     }
 	
-
+	/**
+	 * Function that reset the course list
+	 */
 	static void resetCourseList() {
 	    myCourseList = new ArrayList<Course>();
 	}
 
-	
+	/**
+	 * The function first adds the new courses from the enrolled courses list
+	 * to the drawcourse list, remove the courses in the drawcourse list but
+	 * no longer exist in the enrolled courses list.
+	 * Then it draw all the courses in the drawcourse list to the timetable in the 
+	 * scene. The courses tiem block with overlapped slot would intersects, resulting
+	 * in overlapped block color. The course name and section of the enrolled course
+	 * is written on the corresponding block as well.
+	 */
 	@FXML
 	void drawtable() {
 //		System.out.println("Can you see me ?");
