@@ -14,12 +14,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 
 public class Courselist {
-	private SimpleStringProperty courseCode;
-	private SimpleStringProperty sectionCode;
-	private SimpleStringProperty courseName;
-	private SimpleStringProperty instructor;
-	private CheckBox enbox;
-	private BooleanProperty checked;
+	private final SimpleStringProperty courseCode = new SimpleStringProperty("");
+	private final SimpleStringProperty sectionCode= new SimpleStringProperty("");
+	private final SimpleStringProperty courseName= new SimpleStringProperty("");
+	private final SimpleStringProperty instructor= new SimpleStringProperty("");
+	private CheckBox enbox = new CheckBox();
+	private final BooleanProperty checked= new SimpleBooleanProperty(false);
 	private int status;
 	
 	/**
@@ -32,15 +32,38 @@ public class Courselist {
 	 * @return a Courselist object
 	 * */
 	public Courselist(String code, String section, String name, String instructor) {
-		this.courseCode = new SimpleStringProperty(code);
-		this.sectionCode = new SimpleStringProperty (section);
-		this.courseName = new SimpleStringProperty (name);
-		this.instructor = new SimpleStringProperty (instructor);
-		this.checked = new SimpleBooleanProperty(false);
+//		this.courseCode = new SimpleStringProperty(code);
+//		this.sectionCode = new SimpleStringProperty (section);
+//		this.courseName = new SimpleStringProperty (name);
+//		this.instructor = new SimpleStringProperty (instructor);
+//		this.checked = new SimpleBooleanProperty(false);
+		this.courseCode.set(code);
+		this.sectionCode.set(section);
+		this.courseName.set(name);
+		this.instructor.set(instructor);
+		this.checked.set(false);
 		this.enbox = new CheckBox();
 		this.status = 0;
 	}
+//	
+//	public Courselist() {
+//		this.courseCodeProperty();
+//		this.sectionProperty();
+//		this.instructorProperty();
+//		this.courseNameProperty();
+//		this.checked = new SimpleBooleanProperty(false);
+//		this.enbox = new CheckBox();
+//		this.status = 0;
+//	}
 	
+	/**
+	 * Default Constructor
+	 * @return String course code of the course
+	 * */
+	public Courselist() {
+
+	}
+
 	/**
 	 * A function to return the course code of the Courselist object
 	 * @return String course code of the course
@@ -70,7 +93,7 @@ public class Courselist {
 	 * @return StringProperty course code property of simple string property
 	 * */
 	public StringProperty courseCodeProperty() { 
-        if (courseCode == null) courseCode = new SimpleStringProperty(this, "courseCode");
+//        if (courseCode == null) courseCode = new SimpleStringProperty(this, "courseCode");
         return courseCode; 
     }
 
@@ -95,7 +118,7 @@ public class Courselist {
 	 * @return StringProperty section code property of type simple string property
 	 * */
 	public StringProperty sectionProperty() { 
-        if (sectionCode == null) sectionCode = new SimpleStringProperty(this, "section");
+//        if (sectionCode == null) sectionCode = new SimpleStringProperty(this, "section");
         return sectionCode; 
     }
 	
@@ -113,7 +136,8 @@ public class Courselist {
 	 * @return Nothing
 	 * */
 	public void setCourseName(String courseName) {
-		this.courseName = new SimpleStringProperty(courseName);
+//		this.courseName = new SimpleStringProperty(courseName);
+		this.courseName.set(courseName);
 	}
 	
 	/**
@@ -121,7 +145,7 @@ public class Courselist {
 	 * @return StringProperty course name property of type simple string property
 	 * */
 	public StringProperty courseNameProperty() { 
-        if (courseName == null) courseName = new SimpleStringProperty(this, "courseName");
+//        if (courseName == null) courseName = new SimpleStringProperty(this, "courseName");
         return courseName; 
     }
 
@@ -139,7 +163,8 @@ public class Courselist {
 	 * @return Nothing
 	 * */
 	public void setInstructor(String instructor) {
-		this.instructor = new SimpleStringProperty(instructor);
+//		this.instructor = new SimpleStringProperty(instructor);
+		this.instructor.set(instructor);
 	}
 
 	/**
@@ -147,7 +172,7 @@ public class Courselist {
 	 * @return StringProperty instructor property of type simple string property
 	 * */
 	public StringProperty instructorProperty() { 
-        if (instructor == null) instructor = new SimpleStringProperty(this, "instructor");
+//        if (instructor == null) instructor = new SimpleStringProperty(this, "instructor");
         return instructor; 
     }
 	
