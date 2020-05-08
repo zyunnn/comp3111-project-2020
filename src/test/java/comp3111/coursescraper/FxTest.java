@@ -86,7 +86,6 @@ public class FxTest extends ApplicationTest {
 		clickOn("#tabStatistic");
 		sleep(1000);
 		
-		
 		Button b1 = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertFalse(b1.isDisable());
 	}
@@ -145,6 +144,13 @@ public class FxTest extends ApplicationTest {
 		clickOn("#SelectALL");
 		FxAssert.verifyThat("#SelectALL", LabeledMatchers.hasText("Select All"));
 		sleep(500);
+		
+		clickOn("#MondayBox");
+		clickOn("#PmBox");
+		sleep(100);
+		clickOn("#MondayBox");
+		clickOn("#PmBox");
+		sleep(100);
 		
 		clickOn("#AmBox");
 		CheckBox amm = (CheckBox)s.lookup("#AmBox");

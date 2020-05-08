@@ -75,13 +75,22 @@ import java.util.ArrayList;
 public class Controller implements Initializable{
 	private static List<Course> myCourseList = new ArrayList<Course>();
 	private static List<String> subject;
+	/**
+	 * A list of course object contained all the filtered courses
+	 * */
 	private List<Course> filterCourse;
 	private List<Course> drawCourse = new ArrayList<Course>();
+	/**
+	 * A list of string contains course name and section of the enrolled course
+	 * */
 	private List<String> EnrolledCourse = new ArrayList<String>();
 	private List<Label> drawedLabel = new ArrayList<Label>();
 	private List<Course> drawedCourse = new ArrayList<Course>();
 	
 	private Map<String, Color> map = new HashMap<String, Color>();
+	/**
+	 * A string to contain the text_on_console to be shown in the text console
+	 * */
 	private String text_on_console;
 	
 	

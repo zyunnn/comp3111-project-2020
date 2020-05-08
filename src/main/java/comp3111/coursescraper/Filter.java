@@ -1,22 +1,15 @@
 package comp3111.coursescraper;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
-import javafx.scene.control.CheckBox;
 
 
 /**
 * A class to filter the course based on certain criteria
-* @version 1.0
-* @author Tam Wui Wo
 */
 public class Filter {
 
