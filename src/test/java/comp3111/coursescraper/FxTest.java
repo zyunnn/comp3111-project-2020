@@ -8,6 +8,7 @@ package comp3111.coursescraper;
 
 import static org.junit.Assert.*;
 
+
 import org.junit.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.assertions.api.Assertions;
@@ -41,6 +42,12 @@ public class FxTest extends ApplicationTest {
    		stage.show();
    		s = scene;
 	}
+	
+	@Test
+	public void testsfqcoursebeforesearch() {
+		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
+		assertTrue(b.isDisable());
+	}
 
 	@Test
 	public void testInvalidURL() {
@@ -51,11 +58,15 @@ public class FxTest extends ApplicationTest {
 		sleep(3000);
 	}
 	
+	
 	@Test
 	public void testSearch() {
 		clickOn("#tabMain");
 		clickOn("#buttonSearch");
 		sleep(5000);
+		
+		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
+		assertFalse(b.isDisable());
 	}
 	
 	@Test
@@ -66,14 +77,32 @@ public class FxTest extends ApplicationTest {
 		assertTrue(!b.isDisabled());
 		clickOn("#buttonDisplay");
 		sleep(50000);
-		
+
+
 		clickOn("#tabFilter");
 		sleep(5000);
 		clickOn("#tabList");
 		sleep(5000);
 		clickOn("#tabStatistic");
 		sleep(1000);
+		
+		
+		Button b1 = (Button)s.lookup("#buttonSfqEnrollCourse");
+		assertFalse(b1.isDisable());
 	}
+	
+	@Test
+	public void testInvalidURLsfq() {
+		clickOn("#tabSfq");
+		clickOn("#textfieldSfqUrl");
+		type(KeyCode.DELETE, 3);
+		clickOn("#buttonSfqEnrollCourse");
+		sleep(3000);
+		
+		clickOn("#buttonInstructorSfq");
+		sleep(3000);
+	}
+	
 	
 	@SuppressWarnings("rawtypes")
 	@Test
