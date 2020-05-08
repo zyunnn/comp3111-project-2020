@@ -21,6 +21,7 @@ public class Courselist {
 	/**
 	 * The course code of a course
 	 * */
+
 	private final SimpleStringProperty courseCode = new SimpleStringProperty("");
 	
 	/**
