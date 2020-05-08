@@ -36,6 +36,9 @@ public class Course {
 	}
 	
 	@SuppressWarnings("static-access")
+	/**
+	 * Copy constructor of Course
+	 * */
 	public Course clone() {
 		Course one = new Course();
 		one.setDescription(this.description);
