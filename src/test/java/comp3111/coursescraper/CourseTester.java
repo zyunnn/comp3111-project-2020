@@ -4,7 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-
+/**
+ * A Junit Test case for testing all the functions given the course class
+ * */
 public class CourseTester {
 	Course test_course = new Course();
 	String title = "comp";
@@ -46,54 +48,79 @@ public class CourseTester {
 //		
 	}
 
+	/**
+	 * Test for the getTitle function of course class
+	 * */
 	@Test
 	public void testTitle() {
 		assertEquals(title, test_course.getTitle());
 	}
 	
+	/**
+	 * Test for the getDescription function of course class
+	 * */
 	@Test
 	public void testdse() {
 		assertEquals(desc, test_course.getDescription());
 	}
 	
+	/**
+	 * Test for the getExclusion function of course class
+	 * */
 	@Test
 	public void testexclu() {
 		assertEquals(excl, test_course.getExclusion());
 	}
-
+	
+	/**
+	 * Test for the getNumSolts function of course class
+	 * */
 	@Test
 	public void testnumslot() {
 		assertEquals(1, test_course.getNumSlots());
 	}
 	
-
+	/**
+	 * Test for the getStartHour function of course class
+	 * */
 	@Test
 	public void teststarthr() {
 		assertEquals(14, teSlot.getStartHour());
 	}
 	
+	/**
+	 * Test for the getStartMinute function of course class
+	 * */
 	@Test
 	public void teststartmin() {
 		assertEquals(0, teSlot.getStartMinute());
 	}
 	
 
-
+	/**
+	 * Test for the getEndHour function of course class
+	 * */
 	@Test
 	public void testendhr() {
 		assertEquals(15, teSlot.getEndHour());
 	}
-	
+	/**
+	 * Test for the getEndMinute function of course class
+	 * */
 	@Test
 	public void testendmin() {
 		assertEquals(50, teSlot.getEndMinute());
 	}	
-	
+	/**
+	 * Test for the getVenue function of course class
+	 * */
 	@Test
 	public void testvenue() {
 		assertEquals(venueT, teSlot.getVenue());
 	}
-
+	/**
+	 * Test for the getDay function of course class
+	 * */
 	@Test
 	public void testday() {
 		assertEquals(2, teSlot.getDay());
