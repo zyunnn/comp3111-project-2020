@@ -67,6 +67,7 @@ public class Course {
 	/**
 	 * A function to return the enrollment status of the slot
 	 * @param i the number of the slot to be selected
+	 * @return a boolean expression of the enrollment status
 	 * */
 	public boolean getEnrollStatus(int i) {
 		
@@ -75,6 +76,7 @@ public class Course {
 	
 	/**
 	 * a function return the index of enrolled slot of a course
+	 * @return enrolled slot index
 	 * */
 	public int getEnrolledNum() {
 		return enrollednum;
