@@ -63,14 +63,28 @@ public class Course {
 		}
 	}
 	
+	/**
+	 * Get the boolean indicating a slot
+	 *  under a Course object is enrolled or not
+	 * @param i The index of the slot of this Course object
+	 * @return the boolean indicating the slot under a Course object is enrolled or not
+	 */
 	public boolean getEnrollStatus(int i) {
 		return enrollstatus[i];
 	}
 	
+	/**
+	 * Get the total number of enrolled slots of this Course object
+	 * @return the total number of enrolled slots of this Course object
+	 */
 	public int getEnrolledNum() {
 		return enrollednum;
 	}
 	
+	/**
+	 * Add slot to the Course object
+	 * @param s The Slot object to be added to the Course object
+	 */
 	public void addSlot(Slot s) {
 		if (numSlots >= DEFAULT_MAX_SLOT)
 			return;

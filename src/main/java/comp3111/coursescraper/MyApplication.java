@@ -45,6 +45,9 @@ public class MyApplication extends Application {
 	 * 
 	 * This function will be called by the framework shortly after the program started. You are not required to touch any part of this.
 	 */
+    /**
+     * The start function to initiate the necessary setting for the FXML ui application
+     */
 	@Override
 	public void start(Stage stage) throws Exception {
     	FXMLLoader loader = new FXMLLoader();

@@ -431,6 +431,17 @@ public class Scraper {
 		return null;
 	}
 	
+	/**
+	 * Scrape the sfq score of all the courses listed in the sfq webpage. Error404 
+	 * is handled by displaying an error message to the user when invalid URL is 
+	 * entered. Other HTMLerror will invoke an error message in the console instead 
+	 * of the GUI.
+	 * 
+	 * @param url The url link to the HKUST webpage storing the sfq score.
+	 * @return A Hashtable dictionary with the course code String as key and the relevant
+	 * score to the course as value
+	 */
+	
 	public Hashtable<String,Float> sfqcourse(String url) {
 		
 		sfqcs_final.clear();
@@ -640,7 +651,16 @@ public class Scraper {
 	}
 	
 
-
+	/**
+	 * Scrape the sfq score of all the instructors listed in the sfq webpage. Error404 
+	 * is handled by displaying an error message to the user when invalid URL is 
+	 * entered. Other HTMLerror will invoke an error message in the console instead 
+	 * of the GUI.
+	 * 
+	 * @param url The url link to the HKUST webpage storing the sfq score.
+	 * @return A Hashtable dictionary with the instructor name String as key and the relevant
+	 * score to the course as value
+	 */
 	
 	public Hashtable<String,Float> sfqins(String url) {
 		sfqins_final.clear();
