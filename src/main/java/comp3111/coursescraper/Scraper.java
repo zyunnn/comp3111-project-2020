@@ -1,13 +1,19 @@
 package comp3111.coursescraper;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URLEncoder;
+
 
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
@@ -83,6 +89,11 @@ import java.util.Vector;
  */
 public class Scraper {
 	private WebClient client;
+	private Hashtable<String, List<Float>> sfqcs = new Hashtable<String, List<Float>>(); //sfq course score
+	private Hashtable<String, List<Float>> sfqins = new Hashtable<String, List<Float>>(); // instructor score
+	private Hashtable<String, Float> sfqins_final = new Hashtable<String, Float>();
+	private Hashtable<String, Float> sfqcs_final = new Hashtable<String, Float>();
+	private int[] numList = {1,2,3,4,5,6,7,8,9,0};
 
 	/**
 	 * Default Constructor 
@@ -249,7 +260,6 @@ public class Scraper {
 					validCourseFlag = true;
 					addSlot(e, c, false, s.getSectionCode());
 					e = (HtmlElement)e.getNextSibling();
-					
 					if (e != null && !e.getAttribute("class").contains("newsect"))
 						addSlot(e, c, true, s.getSectionCode());
 				}
@@ -320,6 +330,531 @@ public class Scraper {
 			}
 		}
 		return null;
+	}
+
+	
+	public List<Course> scrape_dir(String url, String sub) {
+
+		try {
+			
+			HtmlPage page = client.getPage(url);
+			List<?> items = (List<?>) page.getByXPath("//div[@class='course']");
+			
+			Vector<Course> result = new Vector<Course>();
+
+			for (int i = 0; i < items.size(); i++) {
+				Course c = new Course();
+				HtmlElement htmlItem = (HtmlElement) items.get(i);
+				
+				HtmlElement title = (HtmlElement) htmlItem.getFirstByXPath(".//h2");
+				c.setTitle(title.asText());
+				
+				// Exclusion subject
+				List<?> popupdetailslist = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
+				HtmlElement exclusion = null;
+				for ( HtmlElement e : (List<HtmlElement>)popupdetailslist) {
+					HtmlElement t = (HtmlElement) e.getFirstByXPath(".//th");
+					HtmlElement d = (HtmlElement) e.getFirstByXPath(".//td");
+					if (t.asText().equals("EXCLUSION")) {
+						exclusion = d;
+					}
+				}
+				c.setExclusion((exclusion == null ? "null" : exclusion.asText()));
+				
+				// Common core subject
+				List<?> popupdetailslist2 = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
+				HtmlElement commonCore = null;
+				for ( HtmlElement e : (List<HtmlElement>)popupdetailslist2) {
+					HtmlElement t = (HtmlElement) e.getFirstByXPath(".//th");
+					HtmlElement d = (HtmlElement) e.getFirstByXPath(".//td");
+					if (t.asText().equals("ATTRIBUTES")) {
+						commonCore = d;
+					}
+				}
+				c.setCommonCore((commonCore == null ? "null" : commonCore.asText()));
+				
+				// Description of subject
+				List<?> popupdetailslist3 = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
+				HtmlElement description = null;
+				for ( HtmlElement e : (List<HtmlElement>)popupdetailslist3) {
+					HtmlElement t = (HtmlElement) e.getFirstByXPath(".//th");
+					HtmlElement d = (HtmlElement) e.getFirstByXPath(".//td");
+					if (t.asText().equals("DESCRIPTION")) {
+						description = d;
+					}
+				}
+				c.setDescription((description == null ? "null" : description.asText()));
+				
+				List<?> sections = (List<?>) htmlItem.getByXPath(".//tr[contains(@class,'newsect')]");
+				// Add slot information
+				boolean validCourseFlag = false;		
+				for ( HtmlElement e: (List<HtmlElement>)sections) {
+					Section s = new Section(e);
+					if (!s.validSection()) 
+						continue;
+							
+					Section.incrementNumSections();
+					validCourseFlag = true;
+					addSlot(e, c, false, s.getSectionCode());
+					e = (HtmlElement)e.getNextSibling();
+					
+					if (e != null && !e.getAttribute("class").contains("newsect"))
+						addSlot(e, c, true, s.getSectionCode());
+				}
+				Course.incrementAllCourse();
+				
+				// Keep track for course with at least 1 valid section
+				if (validCourseFlag) {		
+					Course.incrementNumCourse();
+					result.add(c);
+				}
+				// Debugging purpose
+				else
+					System.out.println("Invalid course: " + c.getTitle());
+			}
+			client.close();
+			return result;
+		} 
+		catch (Exception e) {
+			// Handle Error 404
+			if (e instanceof com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException &&
+					e.getMessage().substring(0,3).equals("404")) {
+				Vector<Course> invalid = new Vector<Course>();
+				Course dummy = new Course();
+				dummy.setTitle(e.getMessage());
+				invalid.add(dummy);
+				return invalid;
+			} else {
+				System.out.println(e);
+			}
+		}
+		return null;
+	}
+	
+	public Hashtable<String,Float> sfqcourse(String url) {
+		
+		sfqcs_final.clear();
+		float error = -1;
+		sfqcs_final.put("No course sfq info scraped from given link: ", error);
+		
+		try {
+
+			HtmlPage page = client.getPage(url);
+//			List<?> items = (List<?>) page.getByXPath(".//table");
+			List<?> bs = (List<?>) page.getByXPath(".//b");
+			
+			sfqcs_final.clear();
+			
+			for (int i = 0; i < bs.size(); i++) {
+				HtmlElement b = (HtmlElement) bs.get(i);
+				String rawCourseCode[] = b.asText().split("\\(");
+				if(rawCourseCode.length<2) {
+//					System.out.println("The scraped text, which supposed to be in b, does not contain '('");
+					continue;
+				}
+				String CourseCode = rawCourseCode[1].substring(0,rawCourseCode[1].length()-1);
+
+				
+				for(int b_num = 0;b_num<2;b_num++) {
+					if(b.getNextSibling()!=null)
+					b = (HtmlElement) b.getNextSibling();
+				}
+				
+				if (b.getNodeName().equals("table") == false) {
+					continue;
+				}
+				if (CourseCode.contains("-")) {
+					CourseCode = CourseCode.split("-")[0];
+				}
+//				System.out.println("CourseCode "+CourseCode+" is scraped.");
+				
+				// Below we are scraping courses under the SAME DEPARTMENT
+				HtmlElement sfqtable = b;
+				List<?> blockvalue = (List<?>) sfqtable.getByXPath(".//tbody/tr/td[@colspan='3']");
+				
+				for (int courseRowNum = 0; courseRowNum < blockvalue.size(); courseRowNum++) {
+					// Every iteration witches one course
+//					System.out.println(((HtmlElement) blockvalue.get(courseRowNum)).asText());
+					HtmlElement trcourse =null;
+					if ((HtmlElement) blockvalue.get(courseRowNum)!=null) {
+					trcourse = (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum)).getParentNode();
+					}
+					if (trcourse == null) continue;
+					
+//					System.out.println("Out");
+//					boolean multipleIns = false;
+					boolean multiSecs = false;
+					boolean abnormal = false; // How come a course would have multiple ins or sections! Abnormal!
+					List<?> trcoursetitle = (List<?>) trcourse.getByXPath(".//td");
+					String courseName = ((HtmlElement) trcoursetitle.get(0)).asText().trim();
+					
+					do {
+						if(trcourse.getNextSibling().getNextSibling()==null) {
+//							System.out.println("trcourse.getNextSibling().getNextSibling()==null");
+							break;
+						}
+						
+						trcourse = (HtmlElement) trcourse.getNextSibling().getNextSibling();
+						
+/*						boolean contain = false;
+						for (int tempp = 0; tempp < trins.getChildElementCount(); tempp++) {
+							System.out.println(trins.getChildNodes().get(tempp).getNodeName().equals("td"));
+							if((trins.getChildNodes().get(tempp).getNodeName()).equals("td")) {
+								contain = true;
+								break;
+							}
+						}*/
+						
+						List<?> trcourseContent = (List<?>) trcourse.getByXPath(".//td");
+						
+						// Coursename
+						for (int size = 0; size < trcourseContent.size(); size++) {
+//							System.out.println(((HtmlElement) trcourseContent.get(size)).asText());
+							if(size == 2) {
+								if(!((HtmlElement) trcourseContent.get(size)).asText().trim().isEmpty()) {
+//									System.out.println(((HtmlElement) trcourseContent.get(size)).asText());
+									multiSecs = true;
+								}
+							}
+
+						}
+						if(multiSecs) {
+							multiSecs = false;
+							continue;
+						}
+						
+//						System.out.println("Abnormal is" +Boolean.toString(abnormal));
+						
+						
+//						for (int size = 0; size < trcourseContent.size(); size++) {
+//							if(size == 1) {
+//							courseName = ((HtmlElement) trcourseContent.get(size)).asText();
+//							System.out.println(((HtmlElement) trcourseContent.get(size)).asText());
+	//						}
+//						}
+						
+						
+						
+//						if (((HtmlElement) trcourseContent.get(2)).asText().split("\\(").length<2) continue;
+						
+						boolean effectiveScore = false;
+						for(int test:numList) {
+//							System.out.println(String.valueOf(test));
+							if(((HtmlElement) trcourseContent.get(3)).asText().split("\\(")[0].contains(String.valueOf(test))) effectiveScore = true;
+						}
+						
+						float insSecScore;
+						
+						if(!effectiveScore) insSecScore = -1;
+						else{
+							// Four should be the place where ins grade is.
+							insSecScore = Float.parseFloat(((HtmlElement) trcourseContent.get(3)).asText().split("\\(")[0].trim());
+						}
+						List<Float> temp = new ArrayList<Float>();
+						
+						
+						if (sfqcs.get(courseName) == null) {
+							temp.clear();
+							temp.add(insSecScore);
+							sfqcs.put(courseName, temp);
+						}
+						else {
+							temp.clear();
+							temp = sfqcs.get(courseName);
+							temp.add(insSecScore);
+							sfqcs.put(courseName, temp);
+						}
+						
+//						System.out.println("CourseRowNum: "+ courseRowNum+ " blockvalue size: " + blockvalue.size());
+						if(courseRowNum+1==blockvalue.size()) {
+//							System.out.println("Reach last");
+							break;
+						}
+/*						if((HtmlElement) trcourse.getNextSibling().getNextSibling() == null) {
+							System.out.println("trcourse = (HtmlElement) trcourse.getNextSibling() is null");
+						}
+						System.out.println(Boolean.toString(((HtmlElement) trcourse.getNextSibling().getNextSibling()).equals((HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode())));
+						if(!(((HtmlElement) trcourse.getNextSibling().getNextSibling()) == (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode())) {
+							System.out.println("sdfsdafdsafasd is DIFEREEEEENT!");
+							abnormal = true;
+						}
+						else if (((HtmlElement) trcourse.getNextSibling().getNextSibling()) == (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode()) {
+							System.out.println("The next sibling and the next course element is EQUALLLLLL");
+						}*/
+					}
+					while (((HtmlElement) trcourse.getNextSibling().getNextSibling()) != (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode());
+					// parent的next simbling是下一个children的parent，停；如果下面没有了，停；
+//					System.out.println("One course finished");
+				}
+				for (String key:sfqcs.keySet()) {
+//					System.out.println("Course: " + key+ " sfq: " + sfqcs.get(key));
+					List<Float> temp_score = sfqcs.get(key);
+					float temp_score_avg = 0;
+					float arr_size = temp_score.size();
+					for (int it = 0; it< temp_score.size(); it++) {
+						if(temp_score.get(it)>0) {
+							temp_score_avg += temp_score.get(it);
+						}
+						else {
+							arr_size -=1;
+						}
+					}
+					if(arr_size<=0) {
+						temp_score_avg = -1;
+					}
+					temp_score_avg = temp_score_avg/arr_size;
+					sfqcs_final.put(key, temp_score_avg);
+				}
+			}
+			
+
+
+			
+//			b.getnextsibling
+//			List<String> result = new Vector<String>();
+			
+//			for (int i = 0; i < items.size(); i++) {
+//				HtmlElement htmlItem = (HtmlElement) items.get(1);
+				//if (htmlItem == b) {
+					//System.out.println("Effective");
+				//}
+
+//				result.add(((HtmlElement) items.get(i)).asText());
+//			}
+	    	return sfqcs_final;
+		}
+		
+		
+		catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return sfqcs_final;
+	}
+	
+
+
+	
+	public Hashtable<String,Float> sfqins(String url) {
+		sfqins_final.clear();
+		float error = -1;
+		sfqins_final.put("No instructor sfq info scraped: ", error);
+		
+		try {
+			HtmlPage page = client.getPage(url);
+//			List<?> items = (List<?>) page.getByXPath(".//table");
+			List<?> bs = (List<?>) page.getByXPath(".//b");
+			
+			// At this the web should be scrapable
+			
+			sfqins_final.clear();
+			
+			for (int i = 0; i < bs.size(); i++) {
+				HtmlElement b = (HtmlElement) bs.get(i);
+				String rawCourseCode[] = b.asText().split("\\(");
+				if(rawCourseCode.length<2) {
+//					System.out.println("The scraped text, which supposed to be in b, does not contain '('");
+					continue;
+				}
+				String CourseCode = rawCourseCode[1].substring(0,rawCourseCode[1].length()-1);
+
+				
+				for(int b_num = 0;b_num<2;b_num++) {
+					if(b.getNextSibling()!=null)
+					b = (HtmlElement) b.getNextSibling();
+				}
+				
+				if (b.getNodeName().equals("table") == false) {
+					continue;
+				}
+				if (CourseCode.contains("-")) {
+					CourseCode = CourseCode.split("-")[0];
+				}
+//				System.out.println("CourseCode "+CourseCode+" is scraped.");
+				
+				// Below we are scraping courses under the SAME DEPARTMENT
+				HtmlElement sfqtable = b;
+				List<?> blockvalue = (List<?>) sfqtable.getByXPath(".//tbody/tr/td[@colspan='3']");
+				
+				for (int courseRowNum = 0; courseRowNum < blockvalue.size(); courseRowNum++) {
+					// Every iteration witches one course
+//					System.out.println(((HtmlElement) blockvalue.get(courseRowNum)).asText());
+					HtmlElement trcourse =null;
+					if ((HtmlElement) blockvalue.get(courseRowNum)!=null) {
+					trcourse = (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum)).getParentNode();
+					}
+					if (trcourse == null) continue;
+					
+//					System.out.println("Out");
+//					boolean multipleIns = false;
+					boolean multiSecs = false;
+					boolean abnormal = false; // How come a course would have multiple ins or sections! Abnormal!
+					do {
+						if(trcourse.getNextSibling().getNextSibling()==null) {
+//							System.out.println("trcourse.getNextSibling().getNextSibling()==null");
+							break;
+						}
+//						if(trcourse.getNextSibling().getNextSibling().getNextSibling() == null || trcourse.getNextSibling().getNextSibling().getNextSibling().getNextSibling()==null) {
+						if(!abnormal) {
+							trcourse = (HtmlElement) trcourse.getNextSibling().getNextSibling().getNextSibling().getNextSibling();
+						}
+						else {
+							trcourse = (HtmlElement) trcourse.getNextSibling().getNextSibling();
+							abnormal = false;
+						}
+						HtmlElement trins = trcourse;
+						
+/*						boolean contain = false;
+						for (int tempp = 0; tempp < trins.getChildElementCount(); tempp++) {
+							System.out.println(trins.getChildNodes().get(tempp).getNodeName().equals("td"));
+							if((trins.getChildNodes().get(tempp).getNodeName()).equals("td")) {
+								contain = true;
+								break;
+							}
+						}*/
+						
+						List<?> trcourseContent = (List<?>) trins.getByXPath(".//td");
+						
+						// Ins name
+						for (int size = 0; size < trcourseContent.size(); size++) {
+//							System.out.println(((HtmlElement) trcourseContent.get(size)).asText());
+							if(size == 1) {
+								if(!((HtmlElement) trcourseContent.get(size)).asText().trim().isEmpty()) {
+//									System.out.println(((HtmlElement) trcourseContent.get(size)).asText());
+									multiSecs = true;
+								}
+							}
+
+						}
+						if(multiSecs) {
+							multiSecs = false;
+//							System.out.println("Touched");
+							trcourse = (HtmlElement) trcourse.getNextSibling().getNextSibling();
+							trins = trcourse;
+							trcourseContent = (List<?>) trins.getByXPath(".//td");
+						}
+						
+//						System.out.println("Abnormal is" +Boolean.toString(abnormal));
+						
+						String insName = "";
+						
+						for (int size = 0; size < trcourseContent.size(); size++) {
+							if(size == 2) {
+							insName = ((HtmlElement) trcourseContent.get(size)).asText();
+//							System.out.println(((HtmlElement) trcourseContent.get(size)).asText());
+							}
+						}
+						
+						
+						
+//						if (((HtmlElement) trcourseContent.get(2)).asText().split("\\(").length<2) continue;
+						
+						boolean effectiveScore = false;
+						for(int test:numList) {
+//							System.out.println(String.valueOf(test));
+							if(((HtmlElement) trcourseContent.get(4)).asText().split("\\(")[0].contains(String.valueOf(test))) effectiveScore = true;
+						}
+						
+						float insSecScore;
+						
+						if(!effectiveScore) insSecScore = -1;
+						else{
+							// Four should be the place where ins grade is.
+							insSecScore = Float.parseFloat(((HtmlElement) trcourseContent.get(4)).asText().split("\\(")[0].trim());
+						}
+						List<Float> temp = new ArrayList<Float>();
+						
+						
+						if (sfqins.get(insName) == null) {
+							temp.clear();
+							temp.add(insSecScore);
+							sfqins.put(insName, temp);
+						}
+						else {
+							temp.clear();
+							temp = sfqins.get(insName);
+							temp.add(insSecScore);
+							sfqins.put(insName, temp);
+						}
+						
+//						System.out.println("CourseRowNum: "+ courseRowNum+ " blockvalue size: " + blockvalue.size());
+						if(courseRowNum+1==blockvalue.size()) {
+//							System.out.println("Reach last");
+							break;
+						}
+						if((HtmlElement) trcourse.getNextSibling().getNextSibling() == null) {
+//							System.out.println("trcourse = (HtmlElement) trcourse.getNextSibling() is null");
+						}
+//						System.out.println(Boolean.toString(((HtmlElement) trcourse.getNextSibling().getNextSibling()).equals((HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode())));
+						if(!(((HtmlElement) trcourse.getNextSibling().getNextSibling()) == (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode())) {
+//							System.out.println("sdfsdafdsafasd is DIFEREEEEENT!");
+							abnormal = true;
+						}
+						else if (((HtmlElement) trcourse.getNextSibling().getNextSibling()) == (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode()) {
+//							System.out.println("The next sibling and the next course element is EQUALLLLLL");
+						}
+					}
+					while (((HtmlElement) trcourse.getNextSibling().getNextSibling()) != (HtmlElement) ((HtmlElement) blockvalue.get(courseRowNum+1)).getParentNode());
+					// parent的next simbling是下一个children的parent，停；如果下面没有了，停；
+//					System.out.println("One course finished");
+				}
+				for (String key:sfqins.keySet()) {
+//					System.out.println("Course: " + key+ " sfq: " + sfqins.get(key));
+					List<Float> temp_score = sfqins.get(key);
+					float temp_score_avg = 0;
+					float arr_size = temp_score.size();
+					for (int it = 0; it< temp_score.size(); it++) {
+						if(temp_score.get(it)>0) {
+							temp_score_avg += temp_score.get(it);
+						}
+						else {
+							arr_size -=1;
+						}
+					}
+					if(arr_size<=0) {
+						temp_score_avg = -1;
+					}
+					temp_score_avg = temp_score_avg/arr_size;
+					sfqins_final.put(key, temp_score_avg);
+			}
+			
+
+
+			
+//			b.getnextsibling
+//			List<String> result = new Vector<String>();
+			
+//			for (int i = 0; i < items.size(); i++) {
+//				HtmlElement htmlItem = (HtmlElement) items.get(1);
+				//if (htmlItem == b) {
+					//System.out.println("Effective");
+				//}
+
+//				result.add(((HtmlElement) items.get(i)).asText());
+//			}
+		}
+		}
+		
+		
+		catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return sfqins_final;
 	}
 
 

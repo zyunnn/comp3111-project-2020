@@ -14,6 +14,11 @@ public class Course {
 	private String title ; 
 	private String description ;
 	private String exclusion;
+
+	private int enrollednum;
+
+
+	private boolean [] enrollstatus;
 	private Slot [] slots;
 	private int numSlots;
 	private boolean isCommonCore;
@@ -24,7 +29,10 @@ public class Course {
 	public Course() {
 		slots = new Slot[DEFAULT_MAX_SLOT];
 		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
+		enrollstatus = new boolean[DEFAULT_MAX_SLOT];
+		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) enrollstatus[i] = false;
 		numSlots = 0;
+		enrollednum = 0;
 	}
 	
 	@SuppressWarnings("static-access")
@@ -42,6 +50,24 @@ public class Course {
 	 * Add a new slot the course
 	 * @param s		slot to be copied to the course
 	 */
+	public void setEnrollStatus(int i, boolean status) {
+		enrollstatus[i] = status;
+		if (status) {
+			enrollednum++;
+		}
+		else if (!status) {
+			enrollednum--;
+		}
+	}
+	
+	public boolean getEnrollStatus(int i) {
+		return enrollstatus[i];
+	}
+	
+	public int getEnrolledNum() {
+		return enrollednum;
+	}
+	
 	public void addSlot(Slot s) {
 		if (numSlots >= DEFAULT_MAX_SLOT)
 			return;
