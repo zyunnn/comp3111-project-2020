@@ -14,6 +14,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+/**
+ * A JunitTest case for the filter class
+ * */
+
 public class FilterTester {
 	Filter fill = new Filter();
 	List<Course> input = new ArrayList<Course>();
