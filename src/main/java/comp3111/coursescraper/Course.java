@@ -51,7 +51,8 @@ public class Course {
 	
 	/**
 	 * Add a new slot the course
-	 * @param s		slot to be copied to the course
+	 * @param status slot to be copied to the course
+	 * @param i the slot to be enrolled
 	 */
 	public void setEnrollStatus(int i, boolean status) {
 		enrollstatus[i] = status;
@@ -63,14 +64,25 @@ public class Course {
 		}
 	}
 	
+	/**
+	 * A function to return the enrollment status of the slot
+	 * @param i the number of the slot to be selected
+	 * */
 	public boolean getEnrollStatus(int i) {
 		return enrollstatus[i];
 	}
 	
+	/**
+	 * a function return the index of enrolled slot of a course
+	 * */
 	public int getEnrolledNum() {
 		return enrollednum;
 	}
 	
+	/**
+	 * A function to add a slot to the current course object
+	 * @param s a slot to be added
+	 * */
 	public void addSlot(Slot s) {
 		if (numSlots >= DEFAULT_MAX_SLOT)
 			return;
