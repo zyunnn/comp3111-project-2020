@@ -552,12 +552,16 @@ public class Controller implements Initializable{
     	textAreaConsole.clear();
     	// intitate the filter checklist and pass to the filter class to process
     	filterCourse = new ArrayList<Course>();
+    	// Create a filter type object
     	Filter filterEN = new Filter();
+    	// A boolean array to record the status of the checkbox
+    	// and feel the checkbox with default value FALSE
     	Boolean []CBList = new Boolean[11];
     	Arrays.fill(CBList, Boolean.FALSE);
+    	// A flag indicate if we need use the filter or not
     	int filter_flag = 0;
 
-    	
+    	// if a checkbox is selected, the corresponding array box will store as true and the filter_flag value increase
     	if (AmBox.isSelected()) {
     		CBList[0] = true;
     		filter_flag ++;
@@ -612,6 +616,12 @@ public class Controller implements Initializable{
     		filter_flag ++;
     	}
     	
+    	/*
+    	 * If filter_flag >0 means we need to do thte filtering
+    	 * we will store the resuls of filtering in filterCourse
+    	 * If filter_flag = 0, means we dont need to do the filtering
+    	 * we will directly do shallow copy of myCourseList to filterCourse
+    	 * */
     	if(filter_flag >0) {
     		filterCourse = filterEN.call_filter(CBList, myCourseList);
     	}else {
@@ -710,6 +720,8 @@ public class Controller implements Initializable{
 	 * and add a listener function to "enroll" checkbox column to capture any change in the selection
 	 * status of the "enroll" checkbox column
 	 * return Nothing
+	 * @param url the link of the course
+	 * @param rb the package resources used
 	 * */
     @Override
 	public void initialize(URL url, ResourceBundle rb) {

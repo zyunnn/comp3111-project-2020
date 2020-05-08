@@ -37,7 +37,7 @@ public class Course {
 	
 	@SuppressWarnings("static-access")
 	/**
-	 * Copy constructor of Course
+	 * A method to clone a given course to create a new course
 	 * */
 	public Course clone() {
 		Course one = new Course();

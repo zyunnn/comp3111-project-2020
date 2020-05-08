@@ -74,6 +74,7 @@ public class FxTest extends ApplicationTest {
 	 */
 	@Test
 	public void testSearch() {
+		sleep(50);
 		clickOn("#tabMain");
 		clickOn("#buttonSearch");
 		sleep(5000);

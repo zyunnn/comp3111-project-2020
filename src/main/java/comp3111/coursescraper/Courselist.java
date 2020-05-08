@@ -230,26 +230,38 @@ public class Courselist {
 	 * */
     public ObservableValue<CheckBox> getCheckBox() {
         return new ObservableValue<CheckBox>() {
+        	/**
+        	 * A method to add the change listener to the Checkbox given a courselist object
+        	 * */
             @Override
             public void addListener(ChangeListener<? super CheckBox> listener) {
  
             }
- 
+        	/**
+        	 * A method to remove the change listener to the Checkbox given a courselist object
+        	 * */
             @Override
             public void removeListener(ChangeListener<? super CheckBox> listener) {
  
             }
- 
+        	/**
+        	 * A method to return Checkbox given a courselist object
+        	 * */
             @Override
             public CheckBox getValue() {
                 return enbox;
             }
- 
+            
+        	/**
+        	 * A method to add the change invalidation listener to the Checkbox given a courselist object
+        	 * */   
             @Override
             public void addListener(InvalidationListener listener) {
  
             }
- 
+        	/**
+        	 * A method to remove the invalidation listener to the Checkbox given a courselist object
+        	 * */
             @Override
             public void removeListener(InvalidationListener listener) {
  

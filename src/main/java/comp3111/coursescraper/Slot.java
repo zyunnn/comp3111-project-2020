@@ -21,7 +21,13 @@ public class Slot {
 	private String venue;
 	private String instructor;
 	private String sectionCode;
+	/**
+	 * An array store all the days in string
+	 * */
 	public static final String DAYS[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa"};
+	/**
+	 * A mapping of string value of day to integer value
+	 * */
 	public static final Map<String, Integer> DAYS_MAP = new HashMap<String, Integer>();
 	static {
 		for (int i = 0; i < DAYS.length; i++)
@@ -30,6 +36,7 @@ public class Slot {
 
 	/**
 	 * Copy a slot as the new slot
+	 * @return a new slot created
 	 */
 	@Override
 	public Slot clone() {
@@ -45,6 +52,7 @@ public class Slot {
 	
 	/**
 	 * Convert time format of the slot
+	 * @return a string type time 
 	 */
 	public String toString() {
 		return DAYS[day] + start.toString() + "-" + end.toString() + ":" + venue;
