@@ -123,7 +123,10 @@ public class FxTest extends ApplicationTest {
 		sleep(3000);
 	}
 	
-	
+	/**
+	 * Test for all the filter functions and enrollement function
+	 * under the cases of subject search and all subject search cases
+	 * */
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testfilter() {
@@ -229,7 +232,11 @@ public class FxTest extends ApplicationTest {
 		
 	}
 	
-	
+
+	/**
+	 * A test case to test the timetable functions w/o initiating search
+	 * */
+
 	@Test
 	public void testtimetable() {
 		sleep(500);
