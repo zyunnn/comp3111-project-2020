@@ -113,7 +113,9 @@ public class FilterTester {
 		input.add(test_course);
 		input.add(test_course_2);
 	}
-	
+	/**
+	 * Test for all the main call_filter function given a list of course
+	 * */
 	@Test
 	public void testfiltermain() {
 		Arrays.fill(CBList, Boolean.FALSE);
@@ -171,16 +173,25 @@ public class FilterTester {
 		assertEquals(true, fill.call_filter(CBList, input).isEmpty());
 	}
 	
+	/**
+	 * Test for the function to filter sections with lab or tutorial
+	 * */
 	@Test
 	public void testchecklab1() {
 		assertEquals(true, fill.checklab(test_course_2));
 	}
 	
+	/**
+	 * Test for the function to filter sections with lab or tutorial given a course
+	 * */
 	@Test
 	public void testchecklab21() {
 		assertEquals(false, fill.checklab(test_course));
 	}
 	
+	/**
+	 * Test for the function to filter sections with AM slot given a course
+	 * */
 	@Test
 	public void testfiltertime() {
 		boolean [] arr = new boolean [2];
@@ -189,6 +200,9 @@ public class FilterTester {
 		assertEquals(true, fill.filtertime(test_course, arr).contains(sc_2));
 	}
 	
+	/**
+	 * Test for the function to filter sections with PM slot given a course
+	 * */
 	@Test
 	public void testfiltertime2() {
 		boolean [] arr = new boolean [2];
@@ -197,6 +211,9 @@ public class FilterTester {
 		assertEquals(true, fill.filtertime(test_course_2, arr).contains(sc_3));
 	}
 	
+	/**
+	 * Test for the function to filter sections with AM and PM or AM, PM slot given a course
+	 * */
 	@Test
 	public void testfiltertime3() {
 		boolean [] arr = new boolean [2];
@@ -205,6 +222,9 @@ public class FilterTester {
 		assertEquals(true, fill.filtertime(test_course, arr).contains(sc_2));
 	}
 	
+	/**
+	 * Test for the function to return all the section given a course
+	 * */
 	@Test
 	public void testallsection() {
 		Set<String> te = new HashSet<String>();
@@ -212,7 +232,10 @@ public class FilterTester {
 		te.add(sc_2);
 		assertEquals(te, fill.allsection(test_course));
 	}
-	
+
+	/**
+	 * Test for the function to return sections with certain day(s) given a course
+	 * */
 	@Test
 	public void testfilterday() {
 		Course temp = new Course();
