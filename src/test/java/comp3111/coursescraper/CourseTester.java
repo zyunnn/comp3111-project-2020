@@ -20,6 +20,12 @@ public class CourseTester {
 	String venueT = "home";
 	int dayy = 2;
 	
+	
+	/**
+	 * Constructor for test_course
+	 * @throws Exception There are errors during the process of 
+	 * constructing the test_course Course object
+	 */
 	@Before
 	public void setUp() throws Exception {
 		test_course.setTitle(title);
@@ -36,6 +42,11 @@ public class CourseTester {
 //		
 	}
 	
+	/**
+	 * Constructor for test slot Slot object
+	 * @throws Exception There are errors during the process of 
+	 * constructing the test_course Course object
+	 */
 	@Before
 	public void setUp2() throws Exception {
 		

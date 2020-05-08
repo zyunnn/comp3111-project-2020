@@ -26,7 +26,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
-
+/**
+ * The fxtest to test the functionality of java fx ui components
+ * @author zhou zhuo rui
+ *
+ */
 public class FxTest extends ApplicationTest {
 
 	private Scene s;
@@ -43,12 +47,19 @@ public class FxTest extends ApplicationTest {
    		s = scene;
 	}
 	
+	/**
+	 * Test to verify if the button for sfqcourseenroll is disable as instructed by the requirement
+	 */
 	@Test
 	public void testsfqcoursebeforesearch() {
 		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertTrue(b.isDisable());
 	}
 
+	/**
+	 * Test for Error404 by inputing incomplete URL followed by
+	 * performing search function by clicking the search button
+	 */
 	@Test
 	public void testInvalidURL() {
 		clickOn("#tabMain");
@@ -58,7 +69,9 @@ public class FxTest extends ApplicationTest {
 		sleep(3000);
 	}
 	
-	
+	/**
+	 * Test for search function by clicking search button in the Main tab
+	 */
 	@Test
 	public void testSearch() {
 		clickOn("#tabMain");
@@ -68,7 +81,10 @@ public class FxTest extends ApplicationTest {
 		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
 		assertFalse(b.isDisable());
 	}
-	
+	/**
+	 * Test for allSubjectSearch function in the AllSubjectSearch tab
+	 * by clicking AllSubjectSearch button, followed by the Display button
+	 */
 	@Test
 	public void testAllSubjectSearch() {
 		clickOn("#tabAllSubject");
@@ -90,6 +106,11 @@ public class FxTest extends ApplicationTest {
 		assertFalse(b1.isDisable());
 	}
 	
+	/**
+	 * Test for Error404 by inputing incomplete URL followed by
+	 * performing search function by clicking the search button
+	 * in the sfq scene
+	 */
 	@Test
 	public void testInvalidURLsfq() {
 		clickOn("#tabSfq");
@@ -102,7 +123,10 @@ public class FxTest extends ApplicationTest {
 		sleep(3000);
 	}
 	
-	
+	/**
+	 * Test for all the filter functions and enrollement function
+	 * under the cases of subject search and all subject search cases
+	 * */
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testfilter() {
@@ -207,6 +231,12 @@ public class FxTest extends ApplicationTest {
 		sleep(500);
 		
 	}
+	
+
+	/**
+	 * A test case to test the timetable functions w/o initiating search
+	 * */
+
 	@Test
 	public void testtimetable() {
 		sleep(500);
